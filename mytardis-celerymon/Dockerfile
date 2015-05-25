@@ -1,4 +1,0 @@
-FROM iserko/docker-celery-flower 
-ENV AMQP_USERNAME admin
-ENV AMQP_PASSWORD pass
-ENV AMQP_HOST $(RABBITMQ_PORT_15672_TCP_ADDR)
