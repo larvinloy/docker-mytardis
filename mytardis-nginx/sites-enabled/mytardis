@@ -1,0 +1,46 @@
+upstream mytardis {
+    #ip_hash;
+    server mytardis:8000 fail_timeout=0;
+    #server unix:/var/run/gunicorn/mytardis/socket ;
+}
+
+server {
+    listen 80 default;
+
+
+
+    client_max_body_size 4G;
+    keepalive_timeout 5;
+
+    gzip off;  # security reasons
+    gzip_proxied any;
+    # MyTardis generates uncompressed archives, so compress them in transit
+    gzip_types application/x-javascript text/css;
+    gzip_min_length 1024;
+    gzip_vary on;
+
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        proxy_pass http://mytardis;
+
+        # this is to solve centos 6 error:
+        # upstream prematurely closed
+        client_max_body_size 4G;
+        client_body_buffer_size 8192k;
+        proxy_connect_timeout 2000;
+        proxy_send_timeout 2000;
+        proxy_read_timeout 2000;
+    }
+
+    location /static/ {
+        expires 7d;
+        alias /opt/mytardis/webapp/static/;
+    }
+
+
+
+}

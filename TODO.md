@@ -1,0 +1,3 @@
+- Replace the makefile with docker-compose YAML script
+- register links with etcd to allow service discovery for multiple hosts and for service failure (e.g., if rabbitmq is restarted and gets new IP, then celery workers cannot rediscover)
+- making backing store for rabbit
