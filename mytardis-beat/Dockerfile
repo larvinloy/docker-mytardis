@@ -1,4 +1,4 @@
-FROM        mytardisbase:latest
+FROM        ianedwardthomas/docker-mytardis-base:latest
 MAINTAINER  Ian Thomas <ianedwardthomas@gmail.com>
 
 USER root

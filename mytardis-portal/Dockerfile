@@ -1,6 +1,5 @@
-#FROM        ubuntu:14.04
-FROM        mytardisbase:latest
-MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com>
+FROM        ianedwardthomas/docker-mytardis-base:latest
+MAINTAINER  Ian Thomas <ianedwardthomas@gmail.com>
 
 USER root
 
