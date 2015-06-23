@@ -11,6 +11,8 @@ DOCKEROPS = -e http_proxy -e https_proxy
 BUILDOPS=--rm
 #BUILDOPS=--no-cache --rm
 
+EXTERNAL_PORT=80
+
 default:
 
 
@@ -34,7 +36,7 @@ run:
 	docker run -d --name=celery.2 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
 	docker run -d --name=celerybeat $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-beat
 	docker run -d --name=mytardis $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-portal
-	docker run -d -p 80:80 $(DOCKEROPS) --name=nginx --volumes-from mytardis --link mytardis:mytardis $(REPOS)docker-mytardis-nginx
+	docker run -d -p $(EXTERNAL_PORT):80 $(DOCKEROPS) --name=nginx --volumes-from mytardis --link mytardis:mytardis $(REPOS)docker-mytardis-nginx
 
 start:
 	docker start db
