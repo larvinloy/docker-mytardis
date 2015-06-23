@@ -5,11 +5,11 @@ import os
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_ENV_DB', 'postgres'),
-        'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'postgres'),
+        'NAME': 'postgres',
+        'USER': 'postgres',
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', ''),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', ''),
+        'HOST': 'db',
+        'PORT': '5432',
     },
 }
 
@@ -24,11 +24,13 @@ BROKER_URL ='amqp://{user}:{password}@{hostname}/{vhost}/'.format(
         user='admin',
         password=os.environ.get('RABBITMQ_ENV_RABBITMQ_PASS', 'mypass'),
         hostname='rabbitmq:5672',
-        vhost=os.environ.get('RABBITMQ_ENV_VHOST', ''))
+        vhost='')
 
 SYSTEM_LOG_LEVEL = 'DEBUG'
 MODULE_LOG_LEVEL = 'DEBUG'
 
+SYSTEM_LOG_FILENAME = '/logs/request.log'
+MODULE_LOG_FILENAME = '/logs/tardis.log'
 
 CELERYBEAT_SCHEDULE = {
     "verify-files": {

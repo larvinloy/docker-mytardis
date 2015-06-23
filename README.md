@@ -8,40 +8,24 @@ Creates an assembly of docker containers that provide the mytardis webportal, pe
 Usage
 -----
 
-1. Install docker (http://docker.com) and connect to your host as usual.
+1. Install docker and docker-compose (http://docs.docker.com/compose)
 
-2. Review the first few lines of the Makefile and change passwords from default.
+2. Review the passwords in the enviornment sections in the docker-compose.xml
 
-3. To make the persistent backend stores:
-
-```
-  	make stores 
-```
-
-4. To start the system:
+3. To start the system:
 
 ```
-  	make run
+  	docker-compose up -d
 ```
 
 After a while, the location http://127.0.0.1 will point at the mytardis portal.
+To watch the celery workers go to: http://127.0.0.1:5555
 
-5. To create a root user::
+4. To create a root user::
 
 ```  
-	make setup
+  docker exec -ti dockermytardis_mytardis_1 python /opt/mytardis/webapp/mytardis.py createsuperuser --user=root
 ```
-
-6. To watch the celery workers::
-
-``` 
-	make monitor
-```
-
-   The monitor is at http://127.0.0.1:5555
-
-See the Makefile for more information.
-
 This project is working reasonably well as demo, but IS NOT FOR PRODUCTION USE
 
 

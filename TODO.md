@@ -1,2 +1,2 @@
-- Replace the makefile with docker-compose YAML script
+- should be able to use same image for portal, celery and beat
 - register links with etcd to allow service discovery for multiple hosts and for service failure (e.g., if rabbitmq is restarted and gets new IP, then celery workers cannot rediscover)
