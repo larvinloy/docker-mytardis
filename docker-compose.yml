@@ -83,19 +83,19 @@ mytardisstore:
   build: mytardis-portal
   volumes:
    - /store
-  command: true
+  command: "true"
 
 dbstore:
   image: postgres
   volumes:
    - /var/lib/postgresql
-  command: true
+  command: "true"
 
 rabbitmqstore:
   image: tutum/rabbitmq
   volumes:
     - /data/mnesia
-  command: true
+  command: "true"
 
 # syslog:
 #   restart: always
