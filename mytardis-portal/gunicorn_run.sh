@@ -14,7 +14,7 @@ fi
 sleep 30
 
 # for empty databases, sync all and fake migrate, otherwise run a real migration
-python mytardis.py syncdb --all --noinput
+python mytardis.py syncdb  --noinput
 python mytardis.py migrate --fake
 python mytardis.py createcachetable default_cache
 python mytardis.py createcachetable celery_lock_cache

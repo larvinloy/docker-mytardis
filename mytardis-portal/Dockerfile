@@ -6,11 +6,15 @@ MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com>
 # Install prerequisites
 RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen
 
+# Fix sshd
+RUN dpkg-reconfigure  openssh-server
+RUN service ssh restart
+
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
 USER mytardis
 ENV MYTARDIS_URL https://github.com/mytardis/mytardis.git
-ENV MYTARDIS_BRANCH 3.6
+ENV MYTARDIS_BRANCH 3.7
 #ENV MYTARDIS_BRANCH develop
 
 RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
@@ -61,6 +65,7 @@ WORKDIR /opt/mytardis/webapp
 COPY gunicorn_conf.py /opt/mytardis/webapp/gunicorn_conf.py
 
 EXPOSE 8000
+EXPOSE 22
 
 VOLUME /opt/mytardis/webapp/static
 
