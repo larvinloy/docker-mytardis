@@ -16,9 +16,12 @@ sleep 30
 # for empty databases, sync all and fake migrate, otherwise run a real migration
 python mytardis.py syncdb  --noinput
 python mytardis.py migrate --fake
+python mytardis.py migrate mydata
+
 python mytardis.py createcachetable default_cache
 python mytardis.py createcachetable celery_lock_cache
 python mytardis.py collectstatic --noinput
+python mytardis.py loaddata tardis/apps/mydata/fixtures/default_experiment_schema.json
 
 /usr/bin/gunicorn --log-level DEBUG --log-file /logs/gunicorn.log -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log  2>&1
 

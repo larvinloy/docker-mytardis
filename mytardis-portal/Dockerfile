@@ -44,6 +44,13 @@ ADD mytardis_settings/ /mytardis_settings
 RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
 
+# Install MyData app
+RUN cd /opt/mytardis/webapp/tardis/apps && git clone https://github.com/wettenhj/mytardis-app-mydata mydata
+RUN cd /opt/mytardis/webapp/tardis/apps/mydata && pip install -r requirements.txt
+RUN echo "INSTALLED_APPS += ('tardis.apps.mydata',)" >> /opt/mytardis/webapp/tardis/settings_changeme.py
+
+
+
 VOLUME /store
 VOLUME /staging
 VOLUME /logs
