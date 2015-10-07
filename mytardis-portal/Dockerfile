@@ -8,7 +8,7 @@ RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-
 
 # Fix sshd
 RUN dpkg-reconfigure  openssh-server
-RUN service ssh restart
+RUN echo "restarting ssh" && service ssh restart
 
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
@@ -45,9 +45,9 @@ RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
 
 # Install MyData app
-RUN cd /opt/mytardis/webapp/tardis/apps && git clone https://github.com/wettenhj/mytardis-app-mydata mydata
-RUN cd /opt/mytardis/webapp/tardis/apps/mydata && pip install -r requirements.txt
-RUN echo "INSTALLED_APPS += ('tardis.apps.mydata',)" >> /opt/mytardis/webapp/tardis/settings_changeme.py
+RUN echo "clone mydata" && cd tardis/apps && git clone https://github.com/wettenhj/mytardis-app-mydata mydata
+RUN cd tardis/apps/mydata && pip install -r requirements.txt
+RUN echo "INSTALLED_APPS += ('tardis.apps.mydata',)" >> tardis/settings_changeme.py
 
 
 
@@ -59,12 +59,21 @@ VOLUME /mytardis_settings
 VOLUME /var/log
 
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 USER root
 
 RUN mkdir -p /var/run/gunicorn/mytardis
 RUN chown mytardis.nginx /var/run/gunicorn/mytardis
+
+#Create mydata account
+RUN adduser --disabled-password --gecos "" mydata
+RUN mkdir /home/mydata/.ssh
+RUN touch /home/mydata/.ssh/authorized_keys
+RUN chown -R mydata:mydata /home/mydata/.ssh/
+RUN chmod 700 /home/mydata/.ssh/
+RUN chmod 600 /home/mydata/.ssh/authorized_keys
+RUN usermod -a -G www-data mydata
+
+VOLUME /home/mydata/.ssh
 
 WORKDIR /opt/mytardis/webapp
 
@@ -83,6 +92,7 @@ VOLUME /logs
 RUN mkdir /etc/service/01gunicorn
 ADD gunicorn_run.sh /etc/service/01gunicorn/run
 RUN chmod +x /etc/service/01gunicorn/run
+RUN echo completed
 CMD ["/sbin/my_init"]
 
 
