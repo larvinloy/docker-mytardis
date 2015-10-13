@@ -7,7 +7,7 @@ mytardis:
   volumes_from:
    - mytardisstore
   ports:
-   - "2200:22"
+   - "50000:22"
 
 celery:
   restart: always

@@ -92,6 +92,12 @@ VOLUME /logs
 RUN mkdir /etc/service/01gunicorn
 ADD gunicorn_run.sh /etc/service/01gunicorn/run
 RUN chmod +x /etc/service/01gunicorn/run
+
+USER root
+RUN mkdir -p /mydatastaging
+RUN chown -R mytardis.nginx  /mydatastaging/ 
+VOLUME /mydatastaging
+
 RUN echo completed
 CMD ["/sbin/my_init"]
 
