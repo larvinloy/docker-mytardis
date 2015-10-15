@@ -6,6 +6,8 @@ mytardis:
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
+  ports:
+   - "50000:22"
 
 celery:
   restart: always

@@ -6,11 +6,14 @@ MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com>
 # Install prerequisites
 RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen
 
+# Fix sshd
+RUN dpkg-reconfigure  openssh-server
+
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
 USER mytardis
 ENV MYTARDIS_URL https://github.com/mytardis/mytardis.git
-ENV MYTARDIS_BRANCH 3.6
+ENV MYTARDIS_BRANCH 3.7
 #ENV MYTARDIS_BRANCH develop
 
 RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
@@ -40,6 +43,12 @@ ADD mytardis_settings/ /mytardis_settings
 RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
 
+# Install MyData app
+ENV MYDATA_URL https://github.com/wettenhj/mytardis-app-mydata
+ENV MYDATA_COMMIT 26bd8ccbeebc6bb65638b861f20f046dc58472b5
+RUN cd tardis/apps && git clone ${MYDATA_URL} mydata
+RUN cd tardis/apps/mydata &&  git reset --hard ${MYDATA_COMMIT} && pip install -r requirements.txt
+
 VOLUME /store
 VOLUME /staging
 VOLUME /logs
@@ -48,12 +57,19 @@ VOLUME /mytardis_settings
 VOLUME /var/log
 
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-USER root
-
 RUN mkdir -p /var/run/gunicorn/mytardis
 RUN chown mytardis.nginx /var/run/gunicorn/mytardis
+
+#Create mydata account
+RUN adduser --disabled-password --gecos "" mydata
+RUN mkdir /home/mydata/.ssh
+RUN touch /home/mydata/.ssh/authorized_keys
+RUN chown -R mydata:mydata /home/mydata/.ssh/
+RUN chmod 700 /home/mydata/.ssh/
+RUN chmod 600 /home/mydata/.ssh/authorized_keys
+RUN usermod -a -G www-data mydata
+
+VOLUME /home/mydata/.ssh
 
 WORKDIR /opt/mytardis/webapp
 
@@ -61,6 +77,7 @@ WORKDIR /opt/mytardis/webapp
 COPY gunicorn_conf.py /opt/mytardis/webapp/gunicorn_conf.py
 
 EXPOSE 8000
+EXPOSE 22
 
 VOLUME /opt/mytardis/webapp/static
 
@@ -71,6 +88,13 @@ VOLUME /logs
 RUN mkdir /etc/service/01gunicorn
 ADD gunicorn_run.sh /etc/service/01gunicorn/run
 RUN chmod +x /etc/service/01gunicorn/run
+
+#Create storage for staging data transfer via SCP MyData 
+RUN mkdir -p /mydatastaging
+RUN chown -R mytardis.nginx  /mydatastaging/ 
+VOLUME /mydatastaging
+
+RUN echo completed
 CMD ["/sbin/my_init"]
 
 
