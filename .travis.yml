@@ -5,9 +5,13 @@ language: python
 services:
       - docker
 
-script: docker-compose up -d
-
 before_install:
       - curl -L https://github.com/docker/compose/releases/download/1.4.0/docker-compose-`uname -s`-`uname -m` > docker-compose
       - chmod +x docker-compose
       - sudo mv docker-compose /usr/local/bin
+
+script:
+      - docker-compose up -d
+      - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker push iiman/dockermytardis_mytardis_1
+      - docker push iiman/nginx 
