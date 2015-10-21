@@ -90,7 +90,8 @@ RUN chmod +x /etc/service/01gunicorn/run
 
 #Create storage for staging data transfer via SCP MyData 
 RUN mkdir -p /mydatastaging
-RUN chown -R mytardis.nginx  /mydatastaging/ 
+RUN chown -R mydata.nginx  /mydatastaging/; chmod -R  775  /mydatastaging  
+
 VOLUME /mydatastaging
 
 RUN echo completed
