@@ -33,7 +33,7 @@ WORKDIR /opt/mytardis/webapp
 
 
 RUN /usr/bin/pip install -U pip
-RUN apt-get install python-dev-all; pip install -r requirements.txt
+RUN apt-get install -y libldap2-dev libsasl2-dev; pip install -r requirements.txt
 
 # configure settings
 RUN mkdir -p /mytardis_settings
