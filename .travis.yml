@@ -13,5 +13,6 @@ before_install:
 script:
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - docker push iiman/dockermytardis_mytardis_1
-      - docker push iiman/nginx 
+      - docker commit -a "Iman Yusuf" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis   | awk '{print $1}'` iiman/dockermytardis_mytardis 
+      - docker push iiman/dockermytardis_mytardis
+     
