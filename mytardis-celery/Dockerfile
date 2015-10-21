@@ -29,7 +29,7 @@ WORKDIR /opt/mytardis/webapp
 #RUN bash /root/build.sh
 
 RUN /usr/bin/pip install -U pip
-RUN pip install -r requirements.txt
+RUN apt-get install -y libldap2-dev libsasl2-dev; pip install -r requirements.txt
 
 
 
