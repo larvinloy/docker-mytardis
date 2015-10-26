@@ -1,5 +1,7 @@
 from tardis.settings_changeme import *
 
+INSTALLED_APPS += ('tardis.apps.mydata',) 
+
 import sys
 sys.path.append('/mytardis_settings')
 

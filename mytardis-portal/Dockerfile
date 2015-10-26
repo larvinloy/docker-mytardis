@@ -8,7 +8,6 @@ RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-
 
 # Fix sshd
 RUN dpkg-reconfigure  openssh-server
-RUN echo "restarting ssh" && service ssh restart
 
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
@@ -45,11 +44,10 @@ RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
 
 # Install MyData app
-RUN echo "clone mydata" && cd tardis/apps && git clone https://github.com/wettenhj/mytardis-app-mydata mydata
-RUN cd tardis/apps/mydata && pip install -r requirements.txt
-RUN echo "INSTALLED_APPS += ('tardis.apps.mydata',)" >> tardis/settings_changeme.py
-
-
+ENV MYDATA_URL https://github.com/wettenhj/mytardis-app-mydata
+ENV MYDATA_COMMIT 26bd8ccbeebc6bb65638b861f20f046dc58472b5
+RUN cd tardis/apps && git clone ${MYDATA_URL} mydata
+RUN cd tardis/apps/mydata &&  git reset --hard ${MYDATA_COMMIT} && pip install -r requirements.txt
 
 VOLUME /store
 VOLUME /staging
@@ -58,8 +56,6 @@ VOLUME /tmp
 VOLUME /mytardis_settings
 VOLUME /var/log
 
-
-USER root
 
 RUN mkdir -p /var/run/gunicorn/mytardis
 RUN chown mytardis.nginx /var/run/gunicorn/mytardis
@@ -93,7 +89,7 @@ RUN mkdir /etc/service/01gunicorn
 ADD gunicorn_run.sh /etc/service/01gunicorn/run
 RUN chmod +x /etc/service/01gunicorn/run
 
-USER root
+#Create storage for staging data transfer via SCP MyData 
 RUN mkdir -p /mydatastaging
 RUN chown -R mytardis.nginx  /mydatastaging/ 
 VOLUME /mydatastaging
