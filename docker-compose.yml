@@ -88,7 +88,7 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  build: mytardis-portal
+  build: mytardis-celery
   volumes:
    - /store
   command: "true"
