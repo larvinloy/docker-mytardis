@@ -12,6 +12,11 @@ fi
 
 # need to sleep to make sure that db is ready before syndb runs
 # there must be a better way of doing this...
+
+ echo cleaning up pids
+    rm -vf /var/run/celery/celerybeat.pid
+
+
 sleep 30
 
 # run Celery worker for our project myproject with Celery configuration stored in Celeryconf

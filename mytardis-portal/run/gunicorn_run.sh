@@ -21,10 +21,12 @@ python mytardis.py migrate mydata
 python mytardis.py createcachetable default_cache
 python mytardis.py createcachetable celery_lock_cache
 python mytardis.py collectstatic --noinput
+
 python mytardis.py loaddata tardis/apps/mydata/fixtures/default_experiment_schema.json
 
 #starting SSH
 service ssh start
+#service sshd start
 
 #starting mytardis
 /usr/bin/gunicorn --log-level DEBUG --log-file /logs/gunicorn.log -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log  2>&1

@@ -8,10 +8,12 @@ mytardis:
    - mytardisstore
   ports:
    - "50000:22"
+  command:
+   - "gunicorn"
 
 celery:
   restart: always
-  build: mytardis-celery
+  build: mytardis-portal
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -19,15 +21,19 @@ celery:
    - INDEX=1
   volumes_from:
    - mytardisstore
+  command:
+   - "celery"
 
 beat:
   restart: always
-  build: mytardis-beat
+  build: mytardis-portal
   links:
    - db:db
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
+  command:
+   - "beat"
 
 nginx:
   restart: always
