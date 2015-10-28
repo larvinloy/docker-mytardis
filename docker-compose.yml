@@ -47,11 +47,11 @@ nginx:
 
 db:
   restart: always
-  image: postgres
+  image: mysql
   volumes_from:
     - dbstore
   environment:
-    - POSTGRES_PASSWORD=mysecretpassword
+    - MYSQL_ROOT_PASSWORD=mysecretpassword
 
 rabbitmq:
   restart: always
@@ -94,10 +94,10 @@ mytardisstore:
   command: "true"
 
 dbstore:
-  image: postgres
+  image: mysql
   volumes:
-   - /var/lib/postgresql
-  command: "true"
+   - /var/lib/mysql
+  command: "chcon -Rt svirt_sandbox_file_t /my/own/datadir" #"true" to fix SELinux problem
 
 rabbitmqstore:
   image: tutum/rabbitmq

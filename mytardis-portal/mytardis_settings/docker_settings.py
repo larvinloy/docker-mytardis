@@ -4,12 +4,12 @@ import os
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
+        'ENGINE':'django.db.backends.mysql',
+        'NAME': 'mysql',
+        'USER': 'mysql',
+        'PASSWORD': os.environ.get('MYSQL_ENV_MYSQL_ROOT_PASSWORD', ''),
         'HOST': 'db',
-        'PORT': '5432',
+        'PORT': '',
     },
 }
 
