@@ -13,12 +13,20 @@ before_install:
 script:
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis   | awk '{print $1}'` $MYTARDIS_IMG_REPO 
-      - docker push $MYTARDIS_IMG_REPO
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_nginx   | awk '{print $1}'` $NGINX_IMG_REPO
-      - docker push $NGINX_IMG_REPO
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_celery   | awk '{print $1}'` $CELERY_IMG_REPO
-      - docker push $CELERY_IMG_REPO
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_beat   | awk '{print $1}'` $BEAT_IMG_REPO
-      - docker push $BEAT_IMG_REPO 
+
+      - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "latest"; else echo "$MYTARDIS_TAG"; fi`
+      - export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "latest"; else echo "$CELERY_TAG"; fi`
+      - export BEAT_TAG=`if [  "$BEAT_TAG" == ""  ]; then echo "latest"; else echo "$BEAT_TAG"; fi`
+      - export NGINX_TAG=`if [  "$NGINX_TAG" == ""  ]; then echo "latest"; else echo "$NGINX_TAG"; fi`
+
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis   | awk '{print $1}'` $MYTARDIS_IMG_REPO:$MYTARDIS_TAG 
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_nginx   | awk '{print $1}'` $NGINX_IMG_REPO:$NGINX_TAG
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_celery   | awk '{print $1}'` $CELERY_IMG_REPO:$CELERY_TAG
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_beat   | awk '{print $1}'` $BEAT_IMG_REPO:$BEAT_TAG      
+
+      - docker push $MYTARDIS_IMG_REPO:$MYTARDIS_TAG
+      - docker push $NGINX_IMG_REPO:$NGINX_TAG
+      - docker push $CELERY_IMG_REPO:$CELERY_TAG
+      - docker push $BEAT_IMG_REPO:$BEAT_TAG
+
 
