@@ -9,7 +9,7 @@ DATABASES = {
         'USER': 'mysql',
         'PASSWORD': os.environ.get('MYSQL_ENV_MYSQL_ROOT_PASSWORD', ''),
         'HOST': 'db',
-        'PORT': '',
+        'PORT': '3306',
     },
 }
 

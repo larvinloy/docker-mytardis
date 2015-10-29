@@ -31,12 +31,18 @@ RUN pip install -r requirements.txt
 RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
 
+# configure settings
+RUN mkdir -p /mytardis_settings
+ADD settings.py /opt/mytardis/webapp/tardis/settings.py
+ADD mytardis_settings/ /mytardis_settings
+
 VOLUME /store
 VOLUME /staging
 VOLUME /logs
 VOLUME /tmp
 VOLUME /mytardis_settings
 VOLUME /var/log
+VOLUME /opt/mytardis/webapp/static
 
 ENV INDEX=1
 ENV LOGFILE=/logs/celery
@@ -45,11 +51,6 @@ EXPOSE 80
 EXPOSE 22
 
 ADD celery_conf.py /opt/mytardis/webapp/tardis/celery_conf.py
-
-# configure settings
-RUN mkdir -p /mytardis_settings
-ADD settings.py /opt/mytardis/webapp/tardis/settings.py
-ADD mytardis_settings/ /mytardis_settings
 
 # Install MyData app
 ENV MYDATA_URL https://github.com/wettenhj/mytardis-app-mydata
@@ -95,5 +96,4 @@ RUN chmod u+x /start.sh
 
 ENTRYPOINT ["/start.sh"]
 
-VOLUME /opt/mytardis/webapp/static
 CMD ["gunicorn"]

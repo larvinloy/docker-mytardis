@@ -1,6 +1,6 @@
 ########################################
 RABBITPASS=pass
-MYSQLPASS=mysecret
+MYSQLPASS=mysecretpassword
 CELERYMON_AUTH=mytardis:${RABBITPASS}
 #######################################
 
