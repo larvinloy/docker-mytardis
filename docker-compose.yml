@@ -52,10 +52,6 @@ db:
     - dbstore
   environment:
     - MYSQL_ROOT_PASSWORD=mysecretpassword
-  expose:
-    - 5432
-  ports:
-    - "5432:5432"
 
 rabbitmq:
   restart: always
