@@ -94,6 +94,8 @@ COPY gunicorn_conf.py /opt/mytardis/webapp/gunicorn_conf.py
 COPY start.sh /
 RUN chmod u+x /start.sh
 
+RUN apt-get -y update &&  apt-get -y  install libmysqlclient-dev && pip install mysql-python
+
 ENTRYPOINT ["/start.sh"]
 
 CMD ["gunicorn"]

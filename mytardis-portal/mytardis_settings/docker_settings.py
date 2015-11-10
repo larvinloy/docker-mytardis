@@ -5,11 +5,17 @@ import os
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'mysql',
-        'USER': 'mysql',
-        'PASSWORD': os.environ.get('MYSQL_ENV_MYSQL_ROOT_PASSWORD', ''),
-        'HOST': 'db',
-        'PORT': '3306',
+        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE', ''),
+        'USER': os.environ.get('DB_ENV_MYSQL_USER', ''),
+        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('DB_PORT_3306_TCP_ADDR', ''),
+        'PORT': os.environ.get('DB_PORT_3306_TCP_PORT', ''),
+        'STORAGE_ENGINE': 'InnoDB',
+        'OPTIONS': {
+            #'init_command': 'SET storage_engine=InnoDB',
+            'charset': 'utf8',
+            'use_unicode': True,
+        },
     },
 }
 

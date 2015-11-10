@@ -51,7 +51,11 @@ db:
   volumes_from:
     - dbstore
   environment:
+    - MYSQL_DATABASE=mysql
     - MYSQL_ROOT_PASSWORD=mysecretpassword
+    - MYSQL_USER=mysql
+    - MYSQL_PASSWORD=mysecretpassword
+    - MYSQL_DATABASE=mysql
 
 rabbitmq:
   restart: always
@@ -97,7 +101,7 @@ dbstore:
   image: mysql
   volumes:
    - /var/lib/mysql
-  command: "chcon -Rt svirt_sandbox_file_t /my/own/datadir" #"true" to fix SELinux problem
+  command: "true" 
 
 rabbitmqstore:
   image: tutum/rabbitmq

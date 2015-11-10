@@ -31,7 +31,7 @@ run:
 	docker run -d --name=rabbitmq $(DOCKEROPS) --volumes-from rabbitmqstore -e RABBITMQ_PASS=$(RABBITPASS) --expose 5672 --expose 15672 -h "amqp.local" tutum/rabbitmq
 	docker run -d -v /var/run/docker.sock:/var/run/docker.sock $(DOCKEROPS) --name rabbitmq-amb -e RABBITMQ_PASS=$(RABBITPASS)  cpuguy83/docker-grand-ambassador -name rabbitmq
 	docker run -d --name=db $(DOCKEROPS) --volumes-from dbstore -e MYSQL_ROOT_PASSWORD=$(MYSQLPASS) mysql
-	sleep 10
+       sleep 10
 	docker run -d --name=celery.1 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
 	docker run -d --name=celery.2 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
 	docker run -d --name=celerybeat $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-beat
