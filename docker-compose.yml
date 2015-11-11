@@ -55,7 +55,6 @@ db:
     - MYSQL_ROOT_PASSWORD=mysecretpassword
     - MYSQL_USER=mysql
     - MYSQL_PASSWORD=mysecretpassword
-    - MYSQL_DATABASE=mysql
 
 rabbitmq:
   restart: always
