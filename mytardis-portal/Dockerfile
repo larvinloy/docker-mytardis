@@ -54,7 +54,7 @@ ADD celery_conf.py /opt/mytardis/webapp/tardis/celery_conf.py
 
 # Install MyData app
 ENV MYDATA_URL https://github.com/wettenhj/mytardis-app-mydata
-ENV MYDATA_COMMIT 26bd8ccbeebc6bb65638b861f20f046dc58472b5
+ENV MYDATA_COMMIT 2faeb6b2fc8787e547037904d89a860afce0d800
 RUN cd tardis/apps && git clone ${MYDATA_URL} mydata
 RUN cd tardis/apps/mydata &&  git reset --hard ${MYDATA_COMMIT} && pip install -r requirements.txt
 
