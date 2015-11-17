@@ -1,6 +1,7 @@
 mytardis:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_mytardis:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -14,6 +15,7 @@ mytardis:
 celery:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_celery:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -27,6 +29,7 @@ celery:
 beat:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_beat:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq

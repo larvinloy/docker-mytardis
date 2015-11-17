@@ -4,7 +4,7 @@ FROM        phusion/baseimage:0.9.16
 MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com>
 
 # Install prerequisites
-RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev libjpeg-dev   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Get mytardis soure
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
@@ -25,8 +25,14 @@ RUN chown -R mytardis:nginx /staging
 # install mytardis
 WORKDIR /opt/mytardis/webapp
 
+# upgrade pip
 RUN /usr/bin/pip install -U pip
-RUN pip install -r requirements.txt && pip install mysql-python && pip install Django==1.8.5
+
+#Remove following line when develop-mysql branch is updated
+ADD requirements.txt /opt/mytardis/webapp/requirements.txt
+
+RUN pip install -r requirements.txt 
+RUN pip install mysql-python 
 
 RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
@@ -71,7 +77,7 @@ RUN usermod -a -G www-data mydata
 VOLUME /home/mydata/.ssh
 
 #Create storage for staging data transfer via SCP MyData
-RUN mkdir -p /mydatastaging
+RUN mkdir -p /mydatastaging && chmod -R 775 /mydatastaging
 RUN chown -R mytardis.nginx  /mydatastaging/
 VOLUME /mydatastaging
 
@@ -95,5 +101,4 @@ COPY start.sh /
 RUN chmod u+x /start.sh
 
 ENTRYPOINT ["/start.sh"]
-
 CMD ["gunicorn"]
