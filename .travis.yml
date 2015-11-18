@@ -13,11 +13,12 @@ before_install:
 script:
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-
-      - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "latest"; else echo "$MYTARDIS_TAG"; fi`
-      - export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "latest"; else echo "$CELERY_TAG"; fi`
-      - export BEAT_TAG=`if [  "$BEAT_TAG" == ""  ]; then echo "latest"; else echo "$BEAT_TAG"; fi`
-      - export NGINX_TAG=`if [  "$NGINX_TAG" == ""  ]; then echo "latest"; else echo "$NGINX_TAG"; fi`
+      
+      - CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+      - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$MYTARDIS_TAG"; fi`
+      - export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$CELERY_TAG"; fi`
+      - export BEAT_TAG=`if [  "$BEAT_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$BEAT_TAG"; fi`
+      - export NGINX_TAG=`if [  "$NGINX_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$NGINX_TAG"; fi`
 
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis   | awk '{print $1}'` $MYTARDIS_IMG_REPO:$MYTARDIS_TAG 
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_nginx   | awk '{print $1}'` $NGINX_IMG_REPO:$NGINX_TAG
@@ -28,5 +29,3 @@ script:
       - docker push $NGINX_IMG_REPO:$NGINX_TAG
       - docker push $CELERY_IMG_REPO:$CELERY_TAG
       - docker push $BEAT_IMG_REPO:$BEAT_TAG
-
-
