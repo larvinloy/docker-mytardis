@@ -16,6 +16,7 @@ script:
       
       - CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
       - echo $CURRENT_BRANCH
+      - echo $TRAVIS_BRANCH
       - git branch
       #- export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$MYTARDIS_TAG"; fi`
       #- export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$CELERY_TAG"; fi`
