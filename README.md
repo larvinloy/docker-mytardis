@@ -3,7 +3,7 @@ Dockerized MyTardis
 
 This is a dockerized build of the 3.6 branch of the Mytardis Data Curation system: http://mytardis.org
 
-Creates an assembly of docker containers that provide the mytardis webportal, persistent tardis store and mysql db, rabbitmq message broker, two celery workers, and celery monitoring interface, all working on a single host.
+Creates an assembly of docker containers that provide the mytardis webportal, persistent tardis store and mysql/postgres db, rabbitmq message broker, two celery workers, and celery monitoring interface, all working on a single host.
 
 Usage
 -----
