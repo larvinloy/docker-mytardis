@@ -26,6 +26,10 @@ RUN chown -R mytardis:nginx /staging
 WORKDIR /opt/mytardis/webapp
 
 RUN /usr/bin/pip install -U pip
+
+#Remove following line when 3.7  branch is updated
+ADD requirements.txt /opt/mytardis/webapp/requirements.txt
+
 RUN pip install -r requirements.txt
 
 RUN mkdir -p /logs
@@ -70,7 +74,7 @@ RUN usermod -a -G www-data mydata
 VOLUME /home/mydata/.ssh
 
 #Create storage for staging data transfer via SCP MyData
-RUN mkdir -p /mydatastaging
+RUN mkdir -p /mydatastaging &&  chmod -R 775 /mydatastaging
 RUN chown -R mytardis.nginx  /mydatastaging/
 VOLUME /mydatastaging
 

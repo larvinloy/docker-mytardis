@@ -1,6 +1,7 @@
 mytardis:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_mytardis:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -14,6 +15,7 @@ mytardis:
 celery:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_celery:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -27,6 +29,7 @@ celery:
 beat:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_beat:mysql
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -47,11 +50,14 @@ nginx:
 
 db:
   restart: always
-  image: postgres
+  image: mysql
   volumes_from:
     - dbstore
   environment:
-    - POSTGRES_PASSWORD=mysecretpassword
+    - MYSQL_DATABASE=mysql
+    - MYSQL_ROOT_PASSWORD=mysecretpassword
+    - MYSQL_USER=mysql
+    - MYSQL_PASSWORD=mysecretpassword
 
 rabbitmq:
   restart: always
@@ -94,10 +100,10 @@ mytardisstore:
   command: "true"
 
 dbstore:
-  image: postgres
+  image: mysql
   volumes:
-   - /var/lib/postgresql
-  command: "true"
+   - /var/lib/mysql
+  command: "true" 
 
 rabbitmqstore:
   image: tutum/rabbitmq

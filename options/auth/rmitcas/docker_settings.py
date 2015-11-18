@@ -4,14 +4,28 @@ import os
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
-        'HOST': 'db',
-        'PORT': '5432',
+        'ENGINE':'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE', ''),
+        'USER': os.environ.get('DB_ENV_MYSQL_USER', ''),
+        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('DB_PORT_3306_TCP_ADDR', ''),
+        'PORT': os.environ.get('DB_PORT_3306_TCP_PORT', ''),
+        'STORAGE_ENGINE': 'InnoDB',
+        'OPTIONS': {
+            #'init_command': 'SET storage_engine=InnoDB',
+            'charset': 'utf8',
+            'use_unicode': True,
+        },
     },
 }
+
+# CAS Server default settings
+CAS_ENABLED = True
+CAS_SERVER_URL = 'https://sso-cas-ext-at.its.rmit.edu.au/rmitcas/'
+CAS_SERVICE_URL = 'http://118.138.244.70'
+CAS_IGNORE_REDIRECT = True
+CAS_LOGOUT_COMPLETELY = True
+CAS_LOGIN_URL = '/cas/login/'
 
 
 CELERY_RESULT_BACKEND = 'amqp'
