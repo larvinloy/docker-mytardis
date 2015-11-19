@@ -1,7 +1,7 @@
 FROM        phusion/baseimage:0.9.16
 
 
-MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com>
+MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
 
 # Install prerequisites
 RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev libjpeg-dev   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

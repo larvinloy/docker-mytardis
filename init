@@ -1,33 +1,36 @@
 #!/bin/bash
 GREEN='\033[1;32m'
 RED='\033[0;31m'
-
+ENDCOLOR='\033[0m'
 
 if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
-   echo  -e "${GREEN}Preparing docker environment to install postgres db\e[0m"
+   echo  -e "${GREEN}Preparing docker environment to install postgres db${ENDCOLOR}"
    cp -v options/db/postgres/Makefile .
    cp -v options/db/postgres/docker-compose.yml .
    cp -v options/db/postgres/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/postgres/Dockerfile mytardis-portal/
+   echo "Done" && printf "\n"
 
 elif [ "$1" == "rmitcas" ]; then
-   echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db\e[0m "
+   echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db${ENDCOLOR} "
    cp -v options/db/mysql/Makefile .
    cp -v options/db/mysql/docker-compose.yml .
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
    echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
    cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
+   echo "Done" && printf "\n"
 
 elif [ "$1" == "mysql" ]; then
-   echo -e "${GREEN}Preparing docker environment to install MySQL db\e[0m"
+   echo -e "${GREEN}Preparing docker environment to install MySQL db${ENDCOLOR}"
    cp -v options/db/mysql/Makefile .
    cp -v options/db/mysql/docker-compose.yml .
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/mysql/Dockerfile mytardis-portal/
+   echo "Done" && printf "\n"
 
 else
-  echo -e "${RED}Invalid command: $0 $@ \e[0m"
+  echo -e "${RED}Invalid command: $0 $@ ${ENDCOLOR}"
   echo "Valid commands: "
   echo "  init"
   echo "  init postgres"
@@ -35,5 +38,3 @@ else
   echo "  init rmitcas"
 
 fi
-printf "\n"
-echo "Done"

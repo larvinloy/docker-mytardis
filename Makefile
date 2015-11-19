@@ -1,6 +1,6 @@
 ########################################
 RABBITPASS=pass
-POSTGRESPASS=mysecret
+MYSQLPASS=mysecretpassword
 CELERYMON_AUTH=mytardis:${RABBITPASS}
 #######################################
 
@@ -30,8 +30,8 @@ kill:
 run:
 	docker run -d --name=rabbitmq $(DOCKEROPS) --volumes-from rabbitmqstore -e RABBITMQ_PASS=$(RABBITPASS) --expose 5672 --expose 15672 -h "amqp.local" tutum/rabbitmq
 	docker run -d -v /var/run/docker.sock:/var/run/docker.sock $(DOCKEROPS) --name rabbitmq-amb -e RABBITMQ_PASS=$(RABBITPASS)  cpuguy83/docker-grand-ambassador -name rabbitmq
-	docker run -d --name=db $(DOCKEROPS) --volumes-from dbstore -e POSTGRES_PASSWORD=$(POSTGRESPASS) postgres
-	sleep 10
+	docker run -d --name=db $(DOCKEROPS) --volumes-from dbstore -e MYSQL_ROOT_PASSWORD=$(MYSQLPASS) mysql
+       sleep 10
 	docker run -d --name=celery.1 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
 	docker run -d --name=celery.2 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
 	docker run -d --name=celerybeat $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-beat
@@ -60,7 +60,7 @@ restart:
 
 stores:
 	docker create --name=rabbitmqstore $(DOCKEROPS) -v /data/mnesia tutum/rabbitmq true
-	docker create --name=dbstore $(DOCKEROPS) -v /var/lib/postgresql postgres true
+	docker create --name=dbstore $(DOCKEROPS) -v /var/lib/mysql mysql true
 	docker create --name=mytardisstore   $(DOCKEROPS) -v /store $(REPOS)docker-mytardis-base true
 rmstores:
 	docker rm -f dbstore mytardisstore rabbitmqstore

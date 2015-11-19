@@ -5,7 +5,7 @@ language: python
 services:
       - docker
 
-#before_install:
+before_install:
       - curl -L https://github.com/docker/compose/releases/download/1.4.0/docker-compose-`uname -s`-`uname -m` > docker-compose
       - chmod +x docker-compose
       - sudo mv docker-compose /usr/local/bin
@@ -15,7 +15,7 @@ script:
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       
       - CURRENT_BRANCH=$TRAVIS_BRANCH
-      - git branch
+      - echo $CURRENT_BRANCH
       - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$MYTARDIS_TAG"; fi`
       - export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$CELERY_TAG"; fi`
       - export BEAT_TAG=`if [  "$BEAT_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$BEAT_TAG"; fi`
