@@ -1,6 +1,7 @@
 mytardis:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_mytardis:master
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -14,6 +15,7 @@ mytardis:
 celery:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_celery:master
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -27,6 +29,7 @@ celery:
 beat:
   restart: always
   build: mytardis-portal
+  #image: iiman/dockermytardis_beat:master
   links:
    - db:db
    - rabbitmqamb:rabbitmq
@@ -52,6 +55,9 @@ db:
     - dbstore
   environment:
     - POSTGRES_PASSWORD=mysecretpassword
+    - POSTGRES_USER=postgres
+    - POSTGRES_DATABASE=postgres
+
 
 rabbitmq:
   restart: always
