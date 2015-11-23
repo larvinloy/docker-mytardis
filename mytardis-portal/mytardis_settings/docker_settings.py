@@ -5,11 +5,11 @@ import os
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
+        'NAME':  os.environ.get('DB_ENV_POSTGRES_DATABASE', ''),
+        'USER': os.environ.get('DB_ENV_POSTGRES_USER', ''),
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
-        'HOST': 'db',
-        'PORT': '5432',
+        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', ''),
+        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', ''),
     },
 }
 
@@ -45,3 +45,4 @@ CELERYBEAT_SCHEDULE = {
 }
 
 djcelery.setup_loader()
+SECRET_KEY="@6$8^9n)7ik$g+fxzik3#uoyn64)&z\2l-c+nknhxy7(u-44w^"  # generated from build.sh

@@ -30,16 +30,16 @@ kill:
 run:
 	docker run -d --name=rabbitmq $(DOCKEROPS) --volumes-from rabbitmqstore -e RABBITMQ_PASS=$(RABBITPASS) --expose 5672 --expose 15672 -h "amqp.local" tutum/rabbitmq
 	docker run -d -v /var/run/docker.sock:/var/run/docker.sock $(DOCKEROPS) --name rabbitmq-amb -e RABBITMQ_PASS=$(RABBITPASS)  cpuguy83/docker-grand-ambassador -name rabbitmq
-	docker run -d --name=db $(DOCKEROPS) --volumes-from dbstore -e MYSQL_ROOT_PASSWORD=$(MYSQLPASS) mysql
+	docker run -d --name=mysqldb $(DOCKEROPS) --volumes-from dbstore -e MYSQL_ROOT_PASSWORD=$(MYSQLPASS) mysql
        sleep 10
-	docker run -d --name=celery.1 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
-	docker run -d --name=celery.2 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
-	docker run -d --name=celerybeat $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-beat
-	docker run -d --name=mytardis $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link db:db --volumes-from mytardisstore $(REPOS)docker-mytardis-portal
+	docker run -d --name=celery.1 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link mysqldb:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
+	docker run -d --name=celery.2 $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link mysqldb:db --volumes-from mytardisstore $(REPOS)docker-mytardis-celery
+	docker run -d --name=celerybeat $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link mysqldb:db --volumes-from mytardisstore $(REPOS)docker-mytardis-beat
+	docker run -d --name=mytardis $(DOCKEROPS) --link rabbitmq-amb:rabbitmq --link mysqldb:db --volumes-from mytardisstore $(REPOS)docker-mytardis-portal
 	docker run -d -p $(EXTERNAL_PORT):80 $(DOCKEROPS) --name=nginx --volumes-from mytardis --link mytardis:mytardis $(REPOS)docker-mytardis-nginx
 
 start:
-	docker start db
+	docker start mysqldb
 	docker start rabbitmq
 	docker start rabbitmq-amb
 	docker start celery.1
@@ -50,13 +50,13 @@ start:
 
 
 stop:
-	docker stop db celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
+	docker stop mysqldb celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
 
 remove:
-	docker rm -f db celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
+	docker rm -f mysqldb celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
 
 restart:
-	docker restart db celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
+	docker restart mysqldb celery.1 celery.2 celerybeat mytardis rabbitmq nginx rabbitmq-amb
 
 stores:
 	docker create --name=rabbitmqstore $(DOCKEROPS) -v /data/mnesia tutum/rabbitmq true

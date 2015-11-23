@@ -3,7 +3,7 @@ mytardis:
   build: mytardis-portal
   #image: iiman/dockermytardis_mytardis:mysql
   links:
-   - db:db
+   - mysqldb:db
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
@@ -17,7 +17,7 @@ celery:
   build: mytardis-portal
   #image: iiman/dockermytardis_celery:mysql
   links:
-   - db:db
+   - mysqldb:db
    - rabbitmqamb:rabbitmq
   environment:
    - INDEX=1
@@ -31,7 +31,7 @@ beat:
   build: mytardis-portal
   #image: iiman/dockermytardis_beat:mysql
   links:
-   - db:db
+   - mysqldb:db
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
@@ -48,7 +48,7 @@ nginx:
   links:
    - mytardis:mytardis
 
-db:
+mysqldb:
   restart: always
   image: mysql
   volumes_from:

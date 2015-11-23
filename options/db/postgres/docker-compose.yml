@@ -3,7 +3,7 @@ mytardis:
   build: mytardis-portal
   #image: iiman/dockermytardis_mytardis:master
   links:
-   - db:db
+   - postgresdb:db
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
@@ -17,7 +17,7 @@ celery:
   build: mytardis-portal
   #image: iiman/dockermytardis_celery:master
   links:
-   - db:db
+   - postgresdb:db
    - rabbitmqamb:rabbitmq
   environment:
    - INDEX=1
@@ -31,7 +31,7 @@ beat:
   build: mytardis-portal
   #image: iiman/dockermytardis_beat:master
   links:
-   - db:db
+   - postgresdb:db
    - rabbitmqamb:rabbitmq
   volumes_from:
    - mytardisstore
@@ -48,7 +48,7 @@ nginx:
   links:
    - mytardis:mytardis
 
-db:
+postgresdb:
   restart: always
   image: postgres
   volumes_from:
