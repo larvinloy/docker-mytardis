@@ -9,12 +9,14 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
    cp -v options/db/postgres/docker-compose.yml .
    cp -v options/db/postgres/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/postgres/Dockerfile mytardis-portal/
+   cp -v options/db/postgres/docker-compose-published.yml . 
    echo "Done" && printf "\n"
 
 elif [ "$1" == "rmitcas" ]; then
    echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db${ENDCOLOR} "
    cp -v options/db/mysql/Makefile .
    cp -v options/db/mysql/docker-compose.yml .
+   cp -v options/db/mysql/docker-compose-published.yml . 
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
    echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
@@ -25,6 +27,7 @@ elif [ "$1" == "mysql" ]; then
    echo -e "${GREEN}Preparing docker environment to install MySQL db${ENDCOLOR}"
    cp -v options/db/mysql/Makefile .
    cp -v options/db/mysql/docker-compose.yml .
+   cp -v options/db/mysql/docker-compose-published.yml .
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/mysql/Dockerfile mytardis-portal/
    echo "Done" && printf "\n"

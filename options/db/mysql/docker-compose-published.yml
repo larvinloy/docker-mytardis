@@ -1,0 +1,128 @@
+mytardis:
+  restart: always
+  image: iiman/dockermytardis_mytardis:master
+  links:
+   - mysqldb:db
+   - rabbitmqamb:rabbitmq
+  volumes_from:
+   - mytardisstore
+  ports:
+   - "50000:22"
+  command:
+   - "gunicorn"
+
+celery:
+  restart: always
+  image: iiman/dockermytardis_celery:master
+  links:
+   - mysqldb:db
+   - rabbitmqamb:rabbitmq
+  environment:
+   - INDEX=1
+  volumes_from:
+   - mytardisstore
+  command:
+   - "celery"
+
+beat:
+  restart: always
+  image: iiman/dockermytardis_beat:master
+  links:
+   - mysqldb:db
+   - rabbitmqamb:rabbitmq
+  volumes_from:
+   - mytardisstore
+  command:
+   - "beat"
+
+nginx:
+  restart: always
+  image: iiman/dockermytardis_nginx:master
+  ports:
+   - "80:80"
+  volumes_from:
+   - mytardis
+  links:
+   - mytardis:mytardis
+
+mysqldb:
+  restart: always
+  image: mysql
+  volumes_from:
+    - dbstore
+  environment:
+    - MYSQL_DATABASE=mysql
+    - MYSQL_ROOT_PASSWORD=mysecretpassword
+    - MYSQL_USER=mysql
+    - MYSQL_PASSWORD=mysecretpassword
+
+rabbitmq:
+  restart: always
+  image: tutum/rabbitmq
+  volumes_from:
+   - rabbitmqstore
+  expose:
+   - "5672"
+   - "15672"
+  hostname: "amqp.local"
+  environment:
+   - RABBITMQ_PASS=pass
+
+rabbitmqamb:
+  restart: always
+  image: cpuguy83/docker-grand-ambassador
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+   - RABBITMQ_PASS=pass
+  command: "-name dockermytardis_rabbitmq_1"
+
+monitor:
+  restart: always
+  image: iserko/docker-celery-flower
+  ports:
+    - "5555:5555"
+  links:
+    - rabbitmqamb:rabbitmq
+  environment:
+    - CELERY_BROKER_URL=amqp://admin:pass@rabbitmq//
+  command:
+    - "--broker_api=http://admin:pass@rabbitmq:15672/api/"
+    - "--basic_auth=mytardis:pass"
+
+mytardisstore:
+  image: iiman/dockermytardis_mytardis:master
+  volumes:
+   - /store
+   - /staging
+   - /logs
+   - /tmp
+   - /mytardis_settings
+   - /var/log
+   - /mydatastaging
+  command: "true"
+
+dbstore:
+  image: mysql
+  volumes:
+   - /var/lib/mysql
+  command: "true" 
+
+rabbitmqstore:
+  image: tutum/rabbitmq
+  volumes:
+    - /data/mnesia
+  command: "true"
+
+# syslog:
+#   restart: always
+#   build: mytardis-syslog
+#   volumes:
+#   # see https://jpetazzo  .github.io/2014/08/24/syslog-docker/
+#     - /tmp/syslogdev:/dev
+# #  volumes_from:
+# #    - logstore
+
+
+
+
