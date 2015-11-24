@@ -14,8 +14,9 @@ script:
 #      - docker-compose up -d
 
 #      - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - cat tag.txt
       - CURRENT_BRANCH=$TRAVIS_BRANCH
+      - MYTARDIS_CONFIG=`echo tag.txt`
+      - echo $MYTARDIS_CONFIG 
       - echo $CURRENT_BRANCH
       - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$MYTARDIS_TAG"; fi`
       - export CELERY_TAG=`if [  "$CELERY_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$CELERY_TAG"; fi`
