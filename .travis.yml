@@ -11,9 +11,10 @@ before_install:
       - sudo mv docker-compose /usr/local/bin
 
 script:
-      - docker-compose up -d
-      - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      
+#      - docker-compose up -d
+
+#      - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - cat tag.txt
       - CURRENT_BRANCH=$TRAVIS_BRANCH
       - echo $CURRENT_BRANCH
       - export MYTARDIS_TAG=`if [  "$MYTARDIS_TAG" == ""  ]; then echo "$CURRENT_BRANCH"; else echo "$MYTARDIS_TAG"; fi`

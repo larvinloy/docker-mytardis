@@ -91,7 +91,7 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  image: iiman/dockermytardis_mytardis:master
+  build: mytardis-portal-published
   volumes:
    - /store
    - /staging

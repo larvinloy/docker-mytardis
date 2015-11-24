@@ -91,15 +91,7 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  image: iiman/dockermytardis_mytardis:master
-  volumes:
-   - /store
-   - /staging
-   - /logs
-   - /tmp
-   - /mytardis_settings
-   - /var/log
-   - /mydatastaging
+  build: mytardis-portal-published
   command: "true"
 
 dbstore:

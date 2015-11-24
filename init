@@ -8,8 +8,11 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
    cp -v options/db/postgres/Makefile .
    cp -v options/db/postgres/docker-compose.yml .
    cp -v options/db/postgres/docker_settings.py mytardis-portal/mytardis_settings/
+   mkdir -p mytardis-portal-published/mytardis_settings
+   cp -v options/db/postgres/docker_settings.py mytardis-portal-published/mytardis_settings/
    cp -v options/db/postgres/Dockerfile mytardis-portal/
    cp -v options/db/postgres/docker-compose-published.yml . 
+   cp -v options/db/Dockerfile-published mytardis-portal-published/Dockerfile
    echo "Done" && printf "\n"
 
 elif [ "$1" == "rmitcas" ]; then
@@ -20,7 +23,10 @@ elif [ "$1" == "rmitcas" ]; then
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
    echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
+   mkdir -p mytardis-portal-published/mytardis_settings
+   cp -v mytardis-portal/mytardis_settings/docker_settings.py  mytardis-portal-published/mytardis_settings/
    cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
+   cp -v options/db/Dockerfile-published mytardis-portal-published/Dockerfile
    echo "Done" && printf "\n"
 
 elif [ "$1" == "mysql" ]; then
@@ -29,7 +35,10 @@ elif [ "$1" == "mysql" ]; then
    cp -v options/db/mysql/docker-compose.yml .
    cp -v options/db/mysql/docker-compose-published.yml .
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
+   mkdir -p mytardis-portal-published/mytardis_settings
+   cp -v options/db/mysql/docker_settings.py mytardis-portal-published/mytardis_settings/
    cp -v options/db/mysql/Dockerfile mytardis-portal/
+   cp -v options/db/Dockerfile-published mytardis-portal-published/Dockerfile
    echo "Done" && printf "\n"
 
 else
