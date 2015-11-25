@@ -1,6 +1,6 @@
 mytardis:
   restart: always
-  image: iiman/dockermytardis_mytardis:master
+  image: iiman/dockermytardis_mytardis:postgres
   links:
    - postgresdb:db
    - rabbitmqamb:rabbitmq
@@ -13,7 +13,7 @@ mytardis:
 
 celery:
   restart: always
-  image: iiman/dockermytardis_celery:master
+  image: iiman/dockermytardis_celery:postgres
   links:
    - postgresdb:db
    - rabbitmqamb:rabbitmq
@@ -26,7 +26,7 @@ celery:
 
 beat:
   restart: always
-  image: iiman/dockermytardis_beat:master
+  image: iiman/dockermytardis_beat:postgres
   links:
    - postgresdb:db
    - rabbitmqamb:rabbitmq
@@ -37,7 +37,7 @@ beat:
 
 nginx:
   restart: always
-  image: iiman/dockermytardis_nginx:master
+  image: iiman/dockermytardis_nginx:postgres
   ports:
    - "80:80"
   volumes_from:
@@ -49,7 +49,7 @@ postgresdb:
   restart: always
   image: postgres
   volumes_from:
-    - dbstore
+    - postgresstore
   environment:
     - POSTGRES_PASSWORD=mysecretpassword
     - POSTGRES_USER=postgres
@@ -94,7 +94,7 @@ mytardisstore:
   build: mytardis-portal-published
   command: "true"
 
-dbstore:
+postgresstore:
   image: postgres
   volumes:
    - /var/lib/postgresql
