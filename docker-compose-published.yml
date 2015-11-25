@@ -92,7 +92,8 @@ monitor:
 
 mytardisstore:
   build: mytardis-portal-published
-  command: "true"
+  volumes:
+    - /mytardis_settings
 
 mysqlstore:
   image: mysql
