@@ -19,15 +19,17 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
 elif [ "$1" == "rmitcas" ]; then
    echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db${ENDCOLOR} "
    cp -v options/db/mysql/Makefile .
-   cp -v options/db/mysql/docker-compose.yml .
-   cp -v options/db/mysql/docker-compose-published.yml . 
+   cp -v options/auth/rmitcas/docker-compose.yml .
+   cp -v options/auth/rmitcas/docker-compose-published.yml . 
    cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
    cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
    echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
    mkdir -p mytardis-portal-published/mytardis_settings
    cp -v mytardis-portal/mytardis_settings/docker_settings.py  mytardis-portal-published/mytardis_settings/
    cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
-   cp -v options/db/mysql/Dockerfile-published mytardis-portal-published/Dockerfile
+   cp -v options/auth/rmitcas/Dockerfile-published mytardis-portal-published/Dockerfile
+   #cp -v options/db/mysql/Dockerfile-published mytardis-portal-published/Dockerfile
+   cp -v options/db/mysql/generate_secret_key.sh mytardis-portal-published/
    echo rmitcas > tag.txt
    echo "Done" && printf "\n"
 
@@ -41,6 +43,7 @@ elif [ "$1" == "mysql" ]; then
    cp -v options/db/mysql/docker_settings.py mytardis-portal-published/mytardis_settings/
    cp -v options/db/mysql/Dockerfile mytardis-portal/
    cp -v options/db/mysql/Dockerfile-published mytardis-portal-published/Dockerfile
+   cp -v options/db/mysql/generate_secret_key.sh mytardis-portal-published/
    echo mysql > tag.txt
    echo "Done" && printf "\n"
 

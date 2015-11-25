@@ -9,8 +9,8 @@ RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-
 # Get mytardis soure
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
 USER mytardis
-ENV MYTARDIS_URL https://github.com/nrmay/mytardis.git
-ENV MYTARDIS_BRANCH develop-mysql
+ENV MYTARDIS_URL https://github.com/nrmay/mytardis.git 
+ENV MYTARDIS_BRANCH develop-rmit
 
 RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
 USER root
