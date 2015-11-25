@@ -49,7 +49,7 @@ mysqldb:
   restart: always
   image: mysql
   volumes_from:
-    - dbstore
+    - mysqlstore
   environment:
     - MYSQL_DATABASE=mysql
     - MYSQL_ROOT_PASSWORD=mysecretpassword
@@ -96,7 +96,7 @@ mytardisstore:
    - /store
   command: "true"
 
-dbstore:
+mysqlstore:
   image: mysql
   volumes:
    - /var/lib/mysql

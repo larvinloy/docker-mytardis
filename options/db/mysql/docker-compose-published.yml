@@ -1,6 +1,6 @@
 mytardis:
   restart: always
-  image: iiman/dockermytardis_mytardis:master
+  image: iiman/dockermytardis_mytardis:mysql
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -13,7 +13,7 @@ mytardis:
 
 celery:
   restart: always
-  image: iiman/dockermytardis_celery:master
+  image: iiman/dockermytardis_celery:mysql
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -26,7 +26,7 @@ celery:
 
 beat:
   restart: always
-  image: iiman/dockermytardis_beat:master
+  image: iiman/dockermytardis_beat:mysql
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -37,7 +37,7 @@ beat:
 
 nginx:
   restart: always
-  image: iiman/dockermytardis_nginx:master
+  image: iiman/dockermytardis_nginx:mysql
   ports:
    - "80:80"
   volumes_from:
@@ -49,7 +49,7 @@ mysqldb:
   restart: always
   image: mysql
   volumes_from:
-    - dbstore
+    - mysqlstore
   environment:
     - MYSQL_DATABASE=mysql
     - MYSQL_ROOT_PASSWORD=mysecretpassword
@@ -92,17 +92,9 @@ monitor:
 
 mytardisstore:
   build: mytardis-portal-published
-  volumes:
-   - /store
-   - /staging
-   - /logs
-   - /tmp
-   - /mytardis_settings
-   - /var/log
-   - /mydatastaging
   command: "true"
 
-dbstore:
+mysqlstore:
   image: mysql
   volumes:
    - /var/lib/mysql

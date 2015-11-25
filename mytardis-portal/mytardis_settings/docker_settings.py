@@ -4,12 +4,18 @@ import os
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME':  os.environ.get('DB_ENV_POSTGRES_DATABASE', ''),
-        'USER': os.environ.get('DB_ENV_POSTGRES_USER', ''),
-        'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', ''),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', ''),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', ''),
+        'ENGINE':'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_ENV_MYSQL_DATABASE', ''),
+        'USER': os.environ.get('DB_ENV_MYSQL_USER', ''),
+        'PASSWORD': os.environ.get('DB_ENV_MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('DB_PORT_3306_TCP_ADDR', ''),
+        'PORT': os.environ.get('DB_PORT_3306_TCP_PORT', ''),
+        'STORAGE_ENGINE': 'InnoDB',
+        'OPTIONS': {
+            #'init_command': 'SET storage_engine=InnoDB',
+            'charset': 'utf8',
+            'use_unicode': True,
+        },
     },
 }
 
@@ -45,4 +51,3 @@ CELERYBEAT_SCHEDULE = {
 }
 
 djcelery.setup_loader()
-SECRET_KEY="@6$8^9n)7ik$g+fxzik3#uoyn64)&z\2l-c+nknhxy7(u-44w^"  # generated from build.sh

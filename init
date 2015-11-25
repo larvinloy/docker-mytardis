@@ -28,7 +28,7 @@ elif [ "$1" == "rmitcas" ]; then
    cp -v mytardis-portal/mytardis_settings/docker_settings.py  mytardis-portal-published/mytardis_settings/
    cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
    cp -v options/db/mysql/Dockerfile-published mytardis-portal-published/Dockerfile
-   echo mysql > tag.txt
+   echo rmitcas > tag.txt
    echo "Done" && printf "\n"
 
 elif [ "$1" == "mysql" ]; then
@@ -41,7 +41,7 @@ elif [ "$1" == "mysql" ]; then
    cp -v options/db/mysql/docker_settings.py mytardis-portal-published/mytardis_settings/
    cp -v options/db/mysql/Dockerfile mytardis-portal/
    cp -v options/db/mysql/Dockerfile-published mytardis-portal-published/Dockerfile
-   echo rmitcas > tag.txt
+   echo mysql > tag.txt
    echo "Done" && printf "\n"
 
 else

@@ -1,4 +1,4 @@
-FROM        iiman/dockermytardis_mytardis:postgres
+FROM        iiman/dockermytardis_mytardis:mysql
 
 MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
 
