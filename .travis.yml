@@ -11,8 +11,7 @@ before_install:
       - sudo mv docker-compose /usr/local/bin
 
 main_script: &main101
-      #- LOCAL_TAG=` if [ "$LOCAL_TAG" == ""  ]; echo postgres else cat tag.txt` 
-      #- LOCAL_TAG={{ item }}
+      - LOCAL_TAG=` if [ "$LOCAL_TAG" == ""  ]; echo postgres else cat tag.txt` 
       - echo $LOCAL_TAG
       - ./init $LOCAL_TAG 
       - docker-compose up -d
@@ -30,12 +29,3 @@ main_script: &main101
       - docker push $CELERY_IMG_REPO:$MYTARDIS_CONFIG_TAG
       - docker push $BEAT_IMG_REPO:$MYTARDIS_CONFIG_TAG
 
-script: 
-    - LOCAL_TAG=mysql
-    - *main101
-    - LOCAL_TAG=postgres
-    - *main101
-with_items:
-      - mysql
-      - rmitcas
-      - postgres
