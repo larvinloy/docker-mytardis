@@ -11,7 +11,7 @@ before_install:
       - sudo mv docker-compose /usr/local/bin
 
 script:
-      - LOCAL_TAG=` if [ "$LOCAL_TAG" == ""  ]; echo postgres else cat tag.txt` 
+      - LOCAL_TAG=` if [ "$LOCAL_TAG" == ""  ]; then echo postgres else cat tag.txt` 
       - echo $LOCAL_TAG
       - ./init $LOCAL_TAG 
       - docker-compose up -d
