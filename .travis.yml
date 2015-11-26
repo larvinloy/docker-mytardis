@@ -31,7 +31,9 @@ main_script: &main101
       - docker push $BEAT_IMG_REPO:$MYTARDIS_CONFIG_TAG
 
 script: 
-    - LOCAL_TAG={{ item }}
+    - LOCAL_TAG=mysql
+    - *main101
+    - LOCAL_TAG=postgres
     - *main101
 with_items:
       - mysql
