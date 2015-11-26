@@ -10,9 +10,10 @@ before_install:
       - chmod +x docker-compose
       - sudo mv docker-compose /usr/local/bin
 
-script:
+main_script: &main101
       #- LOCAL_TAG=` if [ "$LOCAL_TAG" == ""  ]; echo postgres else cat tag.txt` 
-      - LOCAL_TAG={{ item }}
+      #- LOCAL_TAG={{ item }}
+      - echo $LOCAL_TAG
       - ./init $LOCAL_TAG 
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -28,6 +29,11 @@ script:
       - docker push $NGINX_IMG_REPO:$MYTARDIS_CONFIG_TAG
       - docker push $CELERY_IMG_REPO:$MYTARDIS_CONFIG_TAG
       - docker push $BEAT_IMG_REPO:$MYTARDIS_CONFIG_TAG
+
+script: 
+    - LOCAL_TAG={{ item }}
+    - *main101
+
 with_items:
       - mysql
       - rmitcas
