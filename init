@@ -3,7 +3,7 @@ GREEN='\033[1;32m'
 RED='\033[0;31m'
 ENDCOLOR='\033[0m'
 
-function set_common_mysql_rmitcas_env{
+function set_common_mysql_rmitcas_env(){
    #common settings
    cp -v options/db/mysql/docker-compose.yml .
    cp -v options/db/mysql/Makefile .
