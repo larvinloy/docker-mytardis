@@ -33,7 +33,6 @@ main_script: &main101
 script: 
     - LOCAL_TAG={{ item }}
     - *main101
-
 with_items:
       - mysql
       - rmitcas
