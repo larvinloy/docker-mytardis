@@ -11,10 +11,11 @@ before_install:
       - sudo mv docker-compose /usr/local/bin
 
 script:
+      - LOCAL_TAG=`cat tag.txt`
+      - ./init $LOCAL_TAG && echo $LOCAL_TAG
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - CURRENT_BRANCH=$TRAVIS_BRANCH
-      - LOCAL_TAG=`cat tag.txt`
       - export MYTARDIS_CONFIG_TAG=`if [  "$MYTARDIS_CONFIG_TAG" == ""  ]; then if [ "$LOCAL_TAG" != ""  ]; then echo "$LOCAL_TAG"; else echo "$CURRENT_BRANCH"; fi else echo "$MYTARDIS_CONFIG_TAG"; fi`
 
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis   | awk '{print $1}'` $MYTARDIS_IMG_REPO:$MYTARDIS_CONFIG_TAG 

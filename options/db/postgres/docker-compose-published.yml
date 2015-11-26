@@ -92,7 +92,9 @@ monitor:
 
 mytardisstore:
   build: mytardis-portal-published
-  command: "true"
+  dockerfile: Dockerfile-published
+  volumes:
+    - /mytardis_settings
 
 postgresstore:
   image: postgres

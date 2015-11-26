@@ -97,6 +97,7 @@ mytardisstore:
 
 mysqlstore:
   image: mysql
+  dockerfile: Dockerfile-published
   volumes:
    - /var/lib/mysql
   command: "true" 

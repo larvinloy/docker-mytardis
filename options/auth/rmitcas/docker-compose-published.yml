@@ -1,6 +1,6 @@
 mytardis:
   restart: always
-  image: iiman/dockermytardis_mytardis:mysql
+  image: iiman/dockermytardis_mytardis:rmitcas
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -13,7 +13,7 @@ mytardis:
 
 celery:
   restart: always
-  image: iiman/dockermytardis_celery:mysql
+  image: iiman/dockermytardis_celery:rmitcas
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -26,7 +26,7 @@ celery:
 
 beat:
   restart: always
-  image: iiman/dockermytardis_beat:mysql
+  image: iiman/dockermytardis_beat:rmitcas
   links:
    - mysqldb:db
    - rabbitmqamb:rabbitmq
@@ -37,7 +37,7 @@ beat:
 
 nginx:
   restart: always
-  image: iiman/dockermytardis_nginx:mysql
+  image: iiman/dockermytardis_nginx:rmitcas
   ports:
    - "80:80"
   volumes_from:
@@ -91,7 +91,8 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  build: mytardis-portal-published
+  build: mytardis-portal
+  dockerfile: Dockerfile-published
   volumes:
     - /mytardis_settings
 
