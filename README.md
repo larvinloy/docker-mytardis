@@ -29,9 +29,15 @@ Usage
   
 4. Review the passwords in the enviornment sections in the docker-compose.yml
 
-5. To start the system:
+5. Start the system in either of the following ways:
+   - To start the system from existing images of MyTardis and related components (Recommended):
   ```
-  	docker-compose up -d
+    docker-compose -f docker-compose-published.yml  up -d
+  ```
+  
+  - To start the system from after building new images of MyTardis and related components (only if you intend to make changes to the `docker-mytardis` codebase):
+  ```
+    docker-compose up -d
   ```
   
   After a while, the location http://127.0.0.1 will point at the mytardis portal. To watch the celery workers go to: http://127.0.0.1:5555
