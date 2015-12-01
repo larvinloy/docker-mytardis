@@ -12,7 +12,7 @@ before_install:
 
 script:
       - LOCAL_TAG=`cat tag.txt`
-      - LOCAL_TAG=` if [ "$LOCAL_TAG" = ""  ]; then echo postgres; fi` 
+      - if [ "$LOCAL_TAG" == ""  ]; then LOCAL_TAG=postgres; fi
       - echo $LOCAL_TAG
       - ./init $LOCAL_TAG 
       - docker-compose up -d
