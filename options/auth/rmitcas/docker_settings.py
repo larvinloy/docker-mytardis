@@ -1,10 +1,10 @@
 
 # CAS Server default settings
-CAS_ENABLED = True
-CAS_SERVER_URL = 'https://sso-cas-ext-at.its.rmit.edu.au/rmitcas/'
-CAS_SERVICE_URL = 'http://118.138.244.70'
-CAS_IGNORE_REDIRECT = True
-CAS_LOGOUT_COMPLETELY = True
-CAS_LOGIN_URL = '/cas/login/'
+CAS_ENABLED = os.environ.get('CAS_ENABLED', '')
+CAS_SERVER_URL = os.environ.get('CAS_SERVER_URL', '')
+CAS_SERVICE_URL = os.environ.get('CAS_SERVICE_URL', '')
+CAS_IGNORE_REDIRECT = os.environ.get('CAS_IGNORE_REDIRECT', '')
+CAS_LOGOUT_COMPLETELY = os.environ.get('CAS_LOGOUT_COMPLETELY', '')
+CAS_LOGIN_URL = os.environ.get('CAS_LOGIN_URL', '')
 
 

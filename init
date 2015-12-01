@@ -25,7 +25,7 @@ elif [ "$1" == "rmitcas" ] || [ "$1" == "mysql" ]; then
    if [ "$1" == "rmitcas" ]; then
    	echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db${ENDCOLOR} "
         set_common_mysql_rmitcas_env
-        cp -v options/auth/rmitcas/docker-compose-published.yml
+        cp -v options/auth/rmitcas/docker-compose-published.yml .
  	cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
         echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
         cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
