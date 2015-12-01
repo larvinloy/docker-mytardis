@@ -18,20 +18,20 @@ script:
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       #- CURRENT_BRANCH=$TRAVIS_BRANCH
-      - export MYTARDIS_CONFIG_TAG=`if [  "$MYTARDIS_CONFIG_TAG" == ""  ]; then echo "$LOCAL_TAG"; else echo "$MYTARDIS_CONFIG_TAG"; fi`
+      #- export MYTARDIS_CONFIG_TAG=`if [  "$MYTARDIS_CONFIG_TAG" == ""  ]; then echo "$LOCAL_TAG"; else echo "$MYTARDIS_CONFIG_TAG"; fi`
       
       - VERSION=`cat version.txt`
       - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
 
       - MYTARDIS_IMG_REPO=iiman/mytardis-app-"$LOCAL_TAG":"$VERSION"-travis
       - NGINX_IMG_REPO=iiman/mytardis-nginx-"$LOCAL_TAG":"$VERSION"-travis
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-app   | awk '{print $1}'` $MYTARDIS_IMG_REPO:$MYTARDIS_CONFIG_TAG 
-      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-nginx   | awk '{print $1}'` $NGINX_IMG_REPO:$MYTARDIS_CONFIG_TAG
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-app   | awk '{print $1}'` $MYTARDIS_IMG_REPO 
+      - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-nginx   | awk '{print $1}'` $NGINX_IMG_REPO
       #- docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_celery   | awk '{print $1}'` $CELERY_IMG_REPO:$MYTARDIS_CONFIG_TAG
       #- docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_beat   | awk '{print $1}'` $BEAT_IMG_REPO:$MYTARDIS_CONFIG_TAG
 
-      - docker push $MYTARDIS_IMG_REPO:$MYTARDIS_CONFIG_TAG
-      - docker push $NGINX_IMG_REPO:$MYTARDIS_CONFIG_TAG
+      - docker push $MYTARDIS_IMG_REPO
+      - docker push $NGINX_IMG_REPO
       #- docker push $CELERY_IMG_REPO:$MYTARDIS_CONFIG_TAG
       #- docker push $BEAT_IMG_REPO:$MYTARDIS_CONFIG_TAG
 
