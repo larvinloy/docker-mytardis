@@ -1,0 +1,128 @@
+mytardis-app-cas:
+  restart: always
+  image: iiman/mytardis-app-cas:latest-travis
+  links:
+   - mytardis-db-cas:db
+   - mytardis-rabbitmqamb-cas:rabbitmq
+  volumes_from:
+   - mytardis-mytardisstore-cas
+  ports:
+   - "50000:22"
+  environment:
+   - CAS_ENABLED=True
+   - CAS_SERVER_URL=https://sso-cas-ext-at.its.rmit.edu.au/rmitcas/
+   - CAS_SERVICE_URL=http://118.138.244.240
+   - CAS_IGNORE_REDIRECT=True
+   - CAS_LOGOUT_COMPLETELY=True
+   - CAS_LOGIN_URL=/cas/login/
+  command:
+   - "gunicorn"
+
+mytardis-celery-cas:
+  restart: always
+  image: iiman/mytardis-app-cas:latest-travis
+  links:
+   - mytardis-db-cas:db
+   - mytardis-rabbitmqamb-cas:rabbitmq
+  environment:
+   - INDEX=1
+  volumes_from:
+   - mytardis-mytardisstore-cas
+  command:
+   - "celery"
+
+mytardis-beat-cas:
+  restart: always
+  image: iiman/mytardis-app-cas:latest-travis
+  links:
+   - mytardis-db-cas:db
+   - mytardis-rabbitmqamb-cas:rabbitmq
+  volumes_from:
+   - mytardis-mytardisstore-cas
+  command:
+   - "beat"
+
+mytardis-nginx-cas:
+  restart: always
+  image: iiman/mytardis-nginx-cas:latest-travis
+  ports:
+   - "80:80"
+  volumes_from:
+   - mytardis-app-cas
+  links:
+   - mytardis-app-cas:mytardis
+
+mytardis-db-cas:
+  restart: always
+  image: mysql
+  volumes_from:
+    - mytardis-dbstore-cas
+  environment:
+    - MYSQL_DATABASE=mysql
+    - MYSQL_ROOT_PASSWORD=mysecretpassword
+    - MYSQL_USER=mysql
+    - MYSQL_PASSWORD=mysecretpassword
+
+mytardis-rabbitmq-cas:
+  restart: always
+  image: tutum/rabbitmq
+  volumes_from:
+   - mytardis-rabbitmqstore-cas
+  expose:
+   - "5672"
+   - "15672"
+  hostname: "amqp.local"
+  environment:
+   - RABBITMQ_PASS=pass
+
+mytardis-rabbitmqamb-cas:
+  restart: always
+  image: cpuguy83/docker-grand-ambassador
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock
+  environment:
+   - RABBITMQ_PASS=pass
+  command: "-name dockermytardis_rabbitmq_1"
+
+mytardis-monitor-cas:
+  restart: always
+  image: iserko/docker-celery-flower
+  ports:
+    - "5555:5555"
+  links:
+    - mytardis-rabbitmqamb-cas:rabbitmq
+  environment:
+    - CELERY_BROKER_URL=amqp://admin:pass@rabbitmq//
+  command:
+    - "--broker_api=http://admin:pass@rabbitmq:15672/api/"
+    - "--basic_auth=mytardis:pass"
+
+mytardis-mytardisstore-cas:
+  image: iiman/mytardis-app-cas:latest-travis
+  command:
+    - "true"
+
+mytardis-dbstore-cas:
+  image: mysql
+  volumes:
+   - /var/lib/mysql_cas
+  command: "true" 
+
+mytardis-rabbitmqstore-cas:
+  image: tutum/rabbitmq
+  volumes:
+    - /data/mnesia
+  command: "true"
+
+# syslog:
+#   restart: always
+#   build: mytardis-syslog
+#   volumes:
+#   # see https://jpetazzo  .github.io/2014/08/24/syslog-docker/
+#     - /tmp/syslogdev:/dev
+# #  volumes_from:
+# #    - logstore
+
+
+
+
