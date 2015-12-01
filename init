@@ -3,7 +3,7 @@ GREEN='\033[1;32m'
 RED='\033[0;31m'
 ENDCOLOR='\033[0m'
 
-function set_common_mysql_rmitcas_env(){
+function set_common_mysql_cas_env(){
    #common settings
    cp -v options/db/mysql/docker-compose.yml .
    cp -v options/db/mysql/Makefile .
@@ -20,19 +20,19 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
    echo postgres > tag.txt
    echo "Done" && printf "\n"
 
-elif [ "$1" == "rmitcas" ] || [ "$1" == "mysql" ]; then
-   if [ "$1" == "rmitcas" ]; then
-   	echo -e "${GREEN}Preparing docker environment to install RMIT CAS authentication with MySQL db${ENDCOLOR} "
-        set_common_mysql_rmitcas_env
-        cp -v options/auth/rmitcas/docker-compose-published.yml .
- 	cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
-        echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
-        cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
-        echo rmitcas > tag.txt
+elif [ "$1" == "cas" ] || [ "$1" == "mysql" ]; then
+   if [ "$1" == "cas" ]; then
+   	echo -e "${GREEN}Preparing docker environment to install CAS authentication with MySQL db${ENDCOLOR} "
+        set_common_mysql_cas_env
+        cp -v options/auth/cas/docker-compose-published.yml .
+ 	cat options/auth/cas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
+        echo "'cat options/auth/cas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
+        cp -v options/auth/cas/Dockerfile mytardis-portal/
+        echo cas > tag.txt
 
     else
         echo -e "${GREEN}Preparing docker environment to install MySQL db${ENDCOLOR}"
-    	set_common_mysql_rmitcas_env
+    	set_common_mysql_cas_env
         cp -v options/db/mysql/docker-compose-published.yml .
    	cp -v options/db/mysql/Dockerfile mytardis-portal/
    	echo mysql > tag.txt
@@ -45,6 +45,6 @@ else
   echo "  init"
   echo "  init postgres"
   echo "  init mysql"
-  echo "  init rmitcas"
+  echo "  init cas"
 
 fi
