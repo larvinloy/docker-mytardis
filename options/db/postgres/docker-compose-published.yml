@@ -91,10 +91,9 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  build: mytardis-portal-published
-  dockerfile: Dockerfile-published
-  volumes:
-    - /mytardis_settings
+  image: iiman/dockermytardis_mytardis:postgres
+  command:
+   - "true"
 
 postgresstore:
   image: postgres

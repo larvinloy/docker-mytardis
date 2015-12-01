@@ -91,9 +91,9 @@ monitor:
     - "--basic_auth=mytardis:pass"
 
 mytardisstore:
-  build: mytardis-portal-published
-  volumes:
-    - /mytardis_settings
+  image: iiman/dockermytardis_mytardis:mysql
+  command:
+    - "true"
 
 mysqlstore:
   image: mysql

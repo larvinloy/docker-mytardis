@@ -17,7 +17,6 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
    cp -v options/db/postgres/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/postgres/Dockerfile mytardis-portal/
    cp -v options/db/postgres/docker-compose-published.yml . 
-   cp -v options/db/postgres/Dockerfile-published mytardis-portal/
    echo postgres > tag.txt
    echo "Done" && printf "\n"
 
@@ -29,7 +28,6 @@ elif [ "$1" == "rmitcas" ] || [ "$1" == "mysql" ]; then
  	cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
         echo "'cat options/auth/rmitcas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
         cp -v options/auth/rmitcas/Dockerfile mytardis-portal/
-        cp -v options/auth/rmitcas/Dockerfile-published mytardis-portal/
         echo rmitcas > tag.txt
 
     else
@@ -37,7 +35,6 @@ elif [ "$1" == "rmitcas" ] || [ "$1" == "mysql" ]; then
     	set_common_mysql_rmitcas_env
         cp -v options/db/mysql/docker-compose-published.yml .
    	cp -v options/db/mysql/Dockerfile mytardis-portal/
-   	cp -v options/db/mysql/Dockerfile-published mytardis-portal/
    	echo mysql > tag.txt
     fi
     echo "Done" && printf "\n"
