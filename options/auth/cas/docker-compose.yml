@@ -48,9 +48,9 @@ mytardis-nginx-cas:
   ports:
    - "80:80"
   volumes_from:
-   - mytardis-mytardis-cas
+   - mytardis-app-cas
   links:
-   - mytardis-mytardis-cas:mytardis
+   - mytardis-app-cas:mytardis
 
 mytardis-db-cas:
   restart: always
