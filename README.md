@@ -8,7 +8,7 @@ Creates an assembly of docker containers that provide the mytardis webportal, pe
 The build has three types of configurations
 - **postgres**: Uses PostgrSQL db; users are managed via local Django user management only
 - **mysql**: Uses MySQL db; users are managed via local Django user management only
-- **rmitcas**: Uses MySQL db, users are amanaged via local Django user management and RMIT Central Authentication Service
+- **cas**: Uses MySQL db, users are amanaged via local Django user management and Central Authentication Service (CAS)
 
 
 Usage
@@ -21,13 +21,13 @@ Usage
     git clone https://github.com/iiman/docker-mytardis.git
   ```
   
-3. Configure the mytardis build. The build can be configured as *postgres*, *mysql*, or *rmitcas*. The following configures the build to use PostgreSQL.
+3. Configure the mytardis build. The build can be configured as *postgres*, *mysql*, or *cas*. The following configures the build to use PostgreSQL.
   ```
     - cd docker-mytardis
     - ./init postgres
   ```
   
-4. Review the passwords in the enviornment sections in the docker-compose.yml
+4. Review the passwords in the enviornment sections in the docker-compose.yml and/or docker-compose-published.yml.
 
 5. Start the system in either of the following ways:
    - To start the system from existing images of MyTardis and related components (Recommended):
@@ -35,7 +35,7 @@ Usage
     docker-compose -f docker-compose-published.yml  up -d
   ```
   
-  - To start the system from after building new images of MyTardis and related components (only if you intend to make changes to the `docker-mytardis` codebase):
+  - To start the system after building new images of MyTardis and related components (only if you intend to make changes to the `docker-mytardis` codebase):
   ```
     docker-compose up -d
   ```
