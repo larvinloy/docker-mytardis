@@ -23,14 +23,10 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
 elif [ "$1" == "cas" ] || [ "$1" == "mysql" ]; then
    if [ "$1" == "cas" ]; then
    	echo -e "${GREEN}Preparing docker environment to install CAS authentication with MySQL db${ENDCOLOR} "
-#        set_common_mysql_cas_env
-cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/ 
-       cp -v options/auth/cas/docker-compose.yml .
-
-         sed '/build: mytardis-portal/ c\  image: iiman/mytardis-app-cas:latest-travis' options/auth/cas/docker-compose.yml > docker-compose-published.yml
+        cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/ 
+        cp -v options/auth/cas/docker-compose.yml .
+        sed '/build: mytardis-portal/ c\  image: iiman/mytardis-app-cas:latest-travis' options/auth/cas/docker-compose.yml > docker-compose-published.yml
         sed -i '/build: mytardis-nginx/ c\  image: iiman/mytardis-nginx-cas:latest-travis'  docker-compose-published.yml
-
-        #cp -v options/auth/cas/docker-compose-published.yml .
  	cat options/auth/cas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py
         echo "'cat options/auth/cas/docker_settings.py >> mytardis-portal/mytardis_settings/docker_settings.py'"
         cp -v options/auth/cas/Dockerfile mytardis-portal/
@@ -39,7 +35,10 @@ cp -v options/db/mysql/docker_settings.py mytardis-portal/mytardis_settings/
     else
         echo -e "${GREEN}Preparing docker environment to install MySQL db${ENDCOLOR}"
     	set_common_mysql_cas_env
-        cp -v options/db/mysql/docker-compose-published.yml .
+  sed '/build: mytardis-portal/ c\  image: iiman/mytardis-app-mysql:latest-travis' options/auth/cas/docker-compose.yml > docker-compose-published.yml
+        sed -i '/build: mytardis-nginx/ c\  image: iiman/mytardis-nginx-mysql:latest-travis'  docker-compose-published.yml
+
+        #cp -v options/db/mysql/docker-compose-published.yml .
    	cp -v options/db/mysql/Dockerfile mytardis-portal/
    	echo mysql > tag.txt
     fi
