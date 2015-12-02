@@ -90,7 +90,7 @@ mytardis-monitor-cas:
   ports:
     - "5555:5555"
   links:
-    - rabbitmqamb:rabbitmq
+    - mytardis-rabbitmqamb-cas:rabbitmq
   environment:
     - CELERY_BROKER_URL=amqp://admin:pass@rabbitmq//
   command:
