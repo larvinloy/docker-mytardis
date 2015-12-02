@@ -2,7 +2,7 @@ mytardis-app-mysql:
   restart: always
   build: mytardis-portal
   links:
-   - mytardis-mysqldb-mysql:db
+   - mytardis-db-mysql:db
    - mytardis-rabbitmqamb-mysql:rabbitmq
   volumes_from:
    - mytardis-mytardisstore-mysql
@@ -31,7 +31,7 @@ mytardis-beat-mysql:
    - mytardis-db-mysql:db
    - mytardis-rabbitmqamb-mysql:rabbitmq
   volumes_from:
-   - mytardis--mytardisstore-mysql
+   - mytardis-mytardisstore-mysql
   command:
    - "beat"
 
@@ -75,7 +75,7 @@ mytardis-rabbitmqamb-mysql:
    - /var/run/docker.sock:/var/run/docker.sock
   environment:
    - RABBITMQ_PASS=pass
-  command: "-name dockermytardis_rabbitmq_1"
+  command: "-name dockermytardis_mytardis-rabbitmq-mysql_1"
 
 mytardis-monitor-mysql:
   restart: always
