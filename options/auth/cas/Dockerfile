@@ -11,8 +11,10 @@ RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingr
 USER mytardis
 ENV MYTARDIS_URL https://github.com/nrmay/mytardis.git 
 ENV MYTARDIS_BRANCH develop-rmit
+ENV COMMIT f076647a5ea959b81becf28f9691d18c5a89c109
 
-RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
+#RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
+RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp && cd /opt/mytardis/webapp && git checkout ${COMMIT}
 USER root
 
 # Make staging and store volumes
