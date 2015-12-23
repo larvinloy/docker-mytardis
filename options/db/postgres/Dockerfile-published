@@ -1,0 +1,15 @@
+FROM        iiman/dockermytardis_mytardis:postgres
+
+MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
+
+USER root
+
+COPY mytardis_settings/docker_settings.py /mytardis_settings/
+
+COPY generate_secret_key.sh /
+RUN chmod u+x /generate_secret_key.sh
+VOLUME /mytardis_settings
+
+ENTRYPOINT ["/generate_secret_key.sh"]
+CMD ["true"]
+

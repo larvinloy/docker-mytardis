@@ -1,63 +1,66 @@
-mytardis:
+mytardis-app-postgres:
   restart: always
   build: mytardis-portal
   links:
-   - db:db
-   - rabbitmqamb:rabbitmq
+   - mytardis-db-postgres:db
+   - mytardis-rabbitmqamb-postgres:rabbitmq
   volumes_from:
-   - mytardisstore
+   - mytardis-mytardisstore-postgres
   ports:
    - "50000:22"
   command:
    - "gunicorn"
 
-celery:
+mytardis-celery-postgres:
   restart: always
   build: mytardis-portal
   links:
-   - db:db
-   - rabbitmqamb:rabbitmq
+   - mytardis-db-postgres:db
+   - mytardis-rabbitmqamb-postgres:rabbitmq
   environment:
    - INDEX=1
   volumes_from:
-   - mytardisstore
+   - mytardis-mytardisstore-postgres
   command:
    - "celery"
 
-beat:
+mytardis-beat-postgres:
   restart: always
   build: mytardis-portal
   links:
-   - db:db
-   - rabbitmqamb:rabbitmq
+   - mytardis-db-postgres:db
+   - mytardis-rabbitmqamb-postgres:rabbitmq
   volumes_from:
-   - mytardisstore
+   - mytardis-mytardisstore-postgres
   command:
    - "beat"
 
-nginx:
+mytardis-nginx-postgres:
   restart: always
   build: mytardis-nginx
   ports:
    - "80:80"
   volumes_from:
-   - mytardis
+   - mytardis-app-postgres
   links:
-   - mytardis:mytardis
+   - mytardis-app-postgres:mytardis
 
-db:
+mytardis-db-postgres:
   restart: always
   image: postgres
   volumes_from:
-    - dbstore
+    - mytardis-dbstore-postgres
   environment:
     - POSTGRES_PASSWORD=mysecretpassword
+    - POSTGRES_USER=postgres
+    - POSTGRES_DATABASE=postgres
 
-rabbitmq:
+
+mytardis-rabbitmq-postgres:
   restart: always
   image: tutum/rabbitmq
   volumes_from:
-   - rabbitmqstore
+   - mytardis-rabbitmqstore-postgres
   expose:
    - "5672"
    - "15672"
@@ -65,41 +68,39 @@ rabbitmq:
   environment:
    - RABBITMQ_PASS=pass
 
-rabbitmqamb:
+mytardis-rabbitmqamb-postgres:
   restart: always
   image: cpuguy83/docker-grand-ambassador
   volumes:
    - /var/run/docker.sock:/var/run/docker.sock
   environment:
    - RABBITMQ_PASS=pass
-  command: "-name dockermytardis_rabbitmq_1"
+  command: "-name dockermytardis_mytardis-rabbitmq-postgres_1"
 
-monitor:
+mytardis-monitor-postgres:
   restart: always
   image: iserko/docker-celery-flower
   ports:
     - "5555:5555"
   links:
-    - rabbitmqamb:rabbitmq
+    - mytardis-rabbitmqamb-postgres:rabbitmq
   environment:
     - CELERY_BROKER_URL=amqp://admin:pass@rabbitmq//
   command:
     - "--broker_api=http://admin:pass@rabbitmq:15672/api/"
     - "--basic_auth=mytardis:pass"
 
-mytardisstore:
+mytardis-mytardisstore-postgres:
   build: mytardis-portal
-  volumes:
-   - /store
   command: "true"
 
-dbstore:
+mytardis-dbstore-postgres:
   image: postgres
   volumes:
    - /var/lib/postgresql
   command: "true"
 
-rabbitmqstore:
+mytardis-rabbitmqstore-postgres:
   image: tutum/rabbitmq
   volumes:
     - /data/mnesia
