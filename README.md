@@ -18,7 +18,7 @@ Usage
 
 2. Clone `docker-mytardis` repository
   ```
-    git clone https://github.com/iiman/docker-mytardis.git
+    git clone https://github.com/ianedwardthomas/docker-mytardis.git
   ```
   
 3. Configure the mytardis build. The build can be configured as *postgres*, *mysql*, or *cas*. The following configures the build to use PostgreSQL.

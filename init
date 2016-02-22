@@ -17,9 +17,10 @@ if [ "$#" -eq 0 ] || [ "$1" == "postgres" ]; then
    cp -v options/db/postgres/docker_settings.py mytardis-portal/mytardis_settings/
    cp -v options/db/postgres/Dockerfile mytardis-portal/
    #cp -v options/db/postgres/docker-compose-published.yml . 
-sed '/build: mytardis-portal/ c\  image: iiman/mytardis-app-postgres:latest-travis' options/db/postgres/docker-compose.yml > docker-compose-published.yml
-        sed -i '/build: mytardis-nginx/ c\  image: iiman/mytardis-nginx-postgres:latest-travis'  docker-compose-published.yml
-
+sed '/build: mytardis-portal/ c\
+image: iiman/mytardis-app-postgres:latest-travis' options/db/postgres/docker-compose.yml > docker-compose-published.yml
+        sed  '/build: mytardis-nginx/ c\
+image: iiman/mytardis-nginx-postgres:latest-travis'  docker-compose-published.yml > docker-compose-published.yml
    echo postgres > tag.txt
    echo "Done" && printf "\n"
 
