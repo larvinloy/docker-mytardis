@@ -1,7 +1,7 @@
 FROM        phusion/baseimage:0.9.16
 
 
-MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com> 
+MAINTAINER  Ian Thomas <iantedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
 
 # Install prerequisites
 RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libjpeg-dev  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -11,8 +11,11 @@ RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingr
 USER mytardis
 ENV MYTARDIS_URL https://github.com/mytardis/mytardis.git
 ENV MYTARDIS_BRANCH 3.7
+# Use commit on 3.7 before any future changes
+ENV MYTARDIS_COMMIT 63b16e6193ba3c4bf79c0daf1d284a50f2e3a5dd
 
-RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp
+RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp \
+    && cd /opt/mytardis/webapp && git reset --hard ${MYTARDIS_COMMIT}
 USER root
 
 # Make staging and store volumes
