@@ -23,8 +23,8 @@ script:
       - VERSION=`cat version.txt`
       - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
 
-      - MYTARDIS_IMG_REPO=iiman/mytardis-app-"$LOCAL_TAG":"$VERSION"-travis
-      - NGINX_IMG_REPO=iiman/mytardis-nginx-"$LOCAL_TAG":"$VERSION"-travis
+      - MYTARDIS_IMG_REPO=$DOCKER_USERNAME/mytardis-app-"$LOCAL_TAG":"$VERSION"-travis
+      - NGINX_IMG_REPO=$DOCKER_USERNAME/mytardis-nginx-"$LOCAL_TAG":"$VERSION"-travis
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-app   | awk '{print $1}'` $MYTARDIS_IMG_REPO 
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_mytardis-nginx   | awk '{print $1}'` $NGINX_IMG_REPO
       #- docker commit -a "$DOCKER_AUTHOR" -m "auto build" `docker ps | grep --line-buffered  dockermytardis_celery   | awk '{print $1}'` $CELERY_IMG_REPO:$MYTARDIS_CONFIG_TAG
