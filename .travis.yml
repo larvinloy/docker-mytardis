@@ -1,9 +1,6 @@
 sudo: required
 
-
-sudo: required
-
-language: go
+language: python
 
 services:
     - docker
@@ -38,7 +35,6 @@ script:
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - VERSION=`cat version.txt`
       - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
-
       - MYTARDIS_IMG_REPO=$DOCKER_USERNAME/mytardis-app-"$LOCAL_TAG":"$VERSION"-travis
       - NGINX_IMG_REPO=$DOCKER_USERNAME/mytardis-nginx-"$LOCAL_TAG":"$VERSION"-travis
       - docker commit -a "$DOCKER_AUTHOR" -m "auto build" dockermytardis_app_1 $MYTARDIS_IMG_REPO
