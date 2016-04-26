@@ -1,6 +1,6 @@
 upstream mytardis {
     #ip_hash;
-    server mytardis:8000 fail_timeout=0;
+    server mytardisapp:80 fail_timeout=0;
     #server unix:/var/run/gunicorn/mytardis/socket ;
 }
 

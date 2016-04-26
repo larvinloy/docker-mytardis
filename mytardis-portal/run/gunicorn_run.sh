@@ -6,11 +6,13 @@ if grep --quiet SECRET_KEY /mytardis_settings/docker_settings.py; then
     echo Secret key exists
 else
     echo Generating new secret key
-    python -c "import os; from random import choice; key_line = '%sSECRET_KEY=\"%s\"  # generated from build.sh\n' % ('from tardis.settings_changeme import * \n\n' if not os.path.isfile('tardis/settings.py') else '', ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789\\!@#$%^&*(-_=+)') for i in range(50)])); f=open('/mytardis_settings/docker_settings.py', 'a+'); f.write(key_line); f.close()"
+    python -c "import os; from random import choice; key_line = '%sSECRET_KEY=\"%s\"  # generated from build.sh\n' % ('from tardis.settings_changeme import * \n\n' if not os.path.isfile('tardis/settings.py') else '', ''.join([choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])); f=open('/mytardis_settings/docker_settings.py', 'a+'); f.write(key_line); f.close()"
 fi
 
-# need to sleep to make sure that db is ready before syndb runs
-# there must be a better way of doing this...
+
+# The below only works for postgres, because mysql uses differnet port
+#/waitforit.sh db:5432 -- echo "db is up"
+
 sleep 30
 
 # for empty databases, sync all and fake migrate, otherwise run a real migration
@@ -29,4 +31,4 @@ service ssh start
 #service sshd start
 
 #starting mytardis
-/usr/bin/gunicorn --log-level DEBUG --log-file /logs/gunicorn.log -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :8000 wsgi:application >> /logs/gunicorn.log  2>&1
+/usr/bin/gunicorn --log-level WARN --log-file /logs/gunicorn.log -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :$GUNICORN_PORT  wsgi:application >> /logs/gunicorn.log  2>&1

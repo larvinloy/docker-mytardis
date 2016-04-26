@@ -1,0 +1,141 @@
+mytardis-app-postgres:
+    restart: always
+    build: mytardis-portal
+    links:
+        - mytardis-db-postgres:db
+        - mytardis-rabbitmq-postgres:amqp
+        - mytardis-elasticsearch:haystack
+    volumes_from:
+        - mytardis-mytardisstore-postgres
+    ports:
+        - "50000:22"
+        - "2200:2200"
+    command:
+        - "gunicorn"
+    environment:
+        - DEBUG=0
+        - GUNICORN_LOG_LEVEL=INFO
+        - SYSTEM_LOG_LEVEL=WARN
+        - MODULE_LOG_LEVEL=WARN
+        - SINGLE_SEARCH_ENABLED=1
+
+mytardis-celery-postgres:
+    restart: always
+    build: mytardis-portal
+    links:
+        - mytardis-db-postgres:db
+        - mytardis-rabbitmq-postgres:amqp
+        - mytardis-elasticsearch:haystack
+    environment:
+        - INDEX=1
+    volumes_from:
+        - mytardis-mytardisstore-postgres
+    command:
+        - "celery"
+    environment:
+        - DEBUG=0
+        - CELERY_LOG_LEVEL=INFO
+        - SYSTEM_LOG_LEVEL=WARN
+        - MODULE_LOG_LEVEL=WARN
+        - SINGLE_SEARCH_ENABLED=1
+
+mytardis-beat-postgres:
+    restart: always
+    build: mytardis-portal
+    links:
+        - mytardis-db-postgres:db
+        - mytardis-rabbitmq-postgres:amqp
+        - mytardis-elasticsearch:haystack
+    volumes_from:
+        - mytardis-mytardisstore-postgres
+    command:
+        - "beat"
+    environment:
+        - DEBUG=0
+        - BEAT_LOG_LEVEL=INFO
+        - SYSTEM_LOG_LEVEL=WARN
+        - MODULE_LOG_LEVEL=WARN
+        - SINGLE_SEARCH_ENABLED=1
+
+mytardis-nginx-postgres:
+    restart: always
+    build: mytardis-nginx
+    ports:
+        - "80:80"
+    volumes_from:
+        - mytardis-app-postgres
+    links:
+        - mytardis-app-postgres:mytardis
+
+mytardis-db-postgres:
+    restart: always
+    image: postgres
+    volumes_from:
+        - mytardis-dbstore-postgres
+    environment:
+        - POSTGRES_PASSWORD=mysecretpassword
+        - POSTGRES_USER=postgres
+        - POSTGRES_DATABASE=postgres
+
+mytardis-rabbitmq-postgres:
+    restart: always
+    image: rabbitmq:3-management
+    #image: rabbitmq:3.6.1
+    volumes_from:
+        - mytardis-rabbitmqstore-postgres
+    expose:
+        - "5672"
+        - "15672"
+    hostname: "amqp.local"
+    environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=pass
+
+mytardis-monitor-postgres:
+    restart: always
+    image: iserko/docker-celery-flower
+    ports:
+        - "5555:5555"
+    links:
+        - mytardis-rabbitmq-postgres:amqp
+    environment:
+        - CELERY_BROKER_URL=amqp://admin:pass@amqp//
+    command:
+        - "--broker_api=http://admin:pass@amqp:15672/api/"
+        - "--basic_auth=mytardis:pass"
+
+mytardis-mytardisstore-postgres:
+    build: mytardis-portal
+    volumes:
+        - /store
+    command: "true"
+
+mytardis-dbstore-postgres:
+    image: postgres
+    volumes:
+        - /var/lib/postgresql
+    command: "true"
+
+mytardis-rabbitmqstore-postgres:
+    image: tutum/rabbitmq
+    volumes:
+        - /data/mnesia
+    command: "true"
+
+mytardis-elasticsearch:
+    restart: always
+    image: elasticsearch:2.3.1
+    # FIXME: This mount is broken in Docker for Mac, but should be fixed
+    # in later version of elasticsearch. see
+    # https://forums.docker.com/t/cant-start-elasticsearch-with-mounted-data-directory-f-stat-v-fs-family-of-functions/8705
+    # volumes:
+    #     - ./esdata:/usr/share/elasticsearch/data
+
+# syslog:
+#   restart: always
+#   build: mytardis-syslog
+#   volumes:
+#   # see https://jpetazzo  .github.io/2014/08/24/syslog-docker/
+#     - /tmp/syslogdev:/dev
+# #  volumes_from:
+# #    - logstore
