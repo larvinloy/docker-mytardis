@@ -166,7 +166,7 @@ services:
             - ROOT_PASS=my_pass
         volumes:
             - mydatastore:/mydatastaging
-            - mydataconfig:/data:ro
+            - mydataconfig:/data
 
 volumes:
     rabbitmqstore: {}
