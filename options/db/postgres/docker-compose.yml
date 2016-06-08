@@ -2,6 +2,7 @@ version: "2"
 
 services:
 
+
     app:
         restart: always
         build: mytardis-portal
@@ -18,24 +19,30 @@ services:
             - db
             - rabbitmq
         ports:
-            - "2200:2200"
+            - "$APP_SSH_PORT:2200"
         labels:
             - "org.mytardis.db=postgres"
         command:
             - gunicorn
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        env_file: .env
         environment:
-            - DEBUG=0
-            - GUNICORN_LOG_LEVEL=INFO
-            - GUNICORN_PORT=80
-            - SYSTEM_LOG_LEVEL=WARN
-            - MODULE_LOG_LEVEL=WARN
-            - SINGLE_SEARCH_ENABLED=1
-            - DB_PORT=5432
-            - DB_USER=postgres
-            - DB_PASS=mysecretpassword
-            - DB_NAME=postgres
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=pass
+            - DEBUG=$APP_DEBUG
+            - GUNICORN_LOG_LEVEL=$GUNICORN_LOG_LEVEL
+            - GUNICORN_PORT=$GUNICORN_PORT
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
 
     celery:
         restart: always
@@ -52,22 +59,29 @@ services:
         depends_on:
             - db
             - rabbitmq
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
-            - DEBUG=0
-            - CELERY_LOG_LEVEL=INFO
-            - SYSTEM_LOG_LEVEL=WARN
-            - MODULE_LOG_LEVEL=WARN
-            - SINGLE_SEARCH_ENABLED=1
-            - DB_PORT=5432
-            - DB_USER=postgres
-            - DB_PASS=mysecretpassword
-            - DB_NAME=postgres
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=pass
+            - DEBUG=$CELERY_DEBUG
+            - CELERY_LOG_LEVEL=$CELERY_LOG_LEVEL
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
         # volumes_from:
         #     - mytardisstore
         command:
             - celery
+        env_file: .env
+
 
     beat:
         restart: always
@@ -86,18 +100,25 @@ services:
             - "org.mytardis.db=postgres"
         command:
             - beat
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
-            - DB_PORT=5432
-            - DB_USER=postgres
-            - DB_PASS=mysecretpassword
-            - DB_NAME=postgres
-            - DEBUG=0
+            - DEBUG=$BEAT_DEBUG
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
             - BEAT_LOG_LEVEL=INFO
-            - SYSTEM_LOG_LEVEL=WARN
-            - MODULE_LOG_LEVEL=WARN
-            - SINGLE_SEARCH_ENABLED=1
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=pass
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+        env_file: .env
+
 
     db:
         restart: always
@@ -106,27 +127,49 @@ services:
             - "org.mytardis.db=postgres"
         volumes:
             - dbstore:/var/lib/postgresql
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
-            - POSTGRES_PASSWORD=mysecretpassword
-            - POSTGRES_USER=postgres
-            - POSTGRES_DATABASE=postgres
+            - POSTGRES_USER=$DB_USER
+            - POSTGRES_PASSWORD=$DB_PASS
+            - POSTGRES_DATABASE=$DB_NAME
+        env_file: .env
 
     elasticsearch:
         restart: always
         image: elasticsearch:2.3.1
+        volumes:
+            - elasticstore:/opt/elasticsearch/data
+        #command: "elasticsearch -Des.cluster.name='graylog'"
+
 
     nginx:
         restart: always
         build: mytardis-nginx
         image: ianedwardthomas/mytardis-nginx-postgres:latest-travis
         ports:
-            - 80:80
+            - $NGINX_PORT:80
+            - $KIBANA_PORT:5601
         volumes_from:
             - app
+
         links:
             - app:mytardisapp
+        volumes:
+            - ./certs:/opt/certs:ro
+            - ./nginx_config:/etc/nginx/conf.d:ro
         depends_on:
             - app
+        env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+
 
     rabbitmq:
         restart: always
@@ -137,10 +180,16 @@ services:
         expose:
             - '5672'
             - '15672'
+        env_file: .env
+        logging:
+            driver: gelf
+            options:
+                gelf-address: udp://localhost:12201
+                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         hostname: amqp.local
         environment:
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=pass
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
 
     monitor:
         restart: always
@@ -148,29 +197,100 @@ services:
         links:
             - rabbitmq:amqp
         ports:
-            - 5555:5555
+            - $MONITOR_PORT:5555
         depends_on:
             - rabbitmq
+        env_file: .env
         environment:
-            - CELERY_BROKER_URL=amqp://admin:pass@amqp//
+            - CELERY_BROKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@amqp//
         command:
-            - --broker_api=http://admin:pass@amqp:15672/api/
-            - --basic_auth=mytardis:pass
+            - --broker_api=http://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@amqp:15672/api/
+            - --basic_auth=$MONITOR_USER:$MONITOR_PASS
 
     ssh:
         restart: always
         image: million12/ssh
+        env_file: .env
         ports:
-            - "50000:22"
+            - "$SRC_SSH_PORT:22"
         environment:
             - ROOT_PASS=my_pass
         volumes:
             - mydatastore:/mydatastaging
             - mydataconfig:/data
 
+
+    logstash:
+        restart: always
+        image: logstash
+        command: |
+          -e '
+          input {
+            # Default port is 12201/udp
+            gelf { }
+            # This generates one test event per minute.
+            # It is great for debugging, but you might
+            # want to remove it in production.
+            heartbeat { }
+          }
+          # The following filter is a hack!
+          # The "de_dot" filter would be better, but it
+          # is not pre-installed with logstash by default.
+          filter {
+            ruby {
+              code => "
+                event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+              "
+            }
+          }
+          output {
+            elasticsearch {
+              hosts => ["elasticsearch:9200"]
+            }
+            # This will output every message on stdout.
+            # It is great when testing your setup, but in
+            # production, it will probably cause problems;
+            # either by filling up your disks, or worse,
+            # by creating logging loops! BEWARE!
+            #stdout {
+            #  codec => rubydebug
+            #}
+          }'
+        ports:
+            - "12201:12201/udp"
+
+    kibana:
+        restart: always
+        image: kibana
+        env_file: .env
+        depends_on:
+            - elasticsearch
+        expose:
+            - 5601
+        #ports:
+        #    - "$KIBANA_PORT:5601"
+        environment:
+            ELASTICSEARCH_URL: http://elasticsearch:9200
+
+
+    # mongo:
+    #     image: "mongo:3"
+    #
+    # graylog:
+    #     image: graylog2/server:2.0.1-1
+    #     environment:
+    #         - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+    #         - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+    #         - GRAYLOG_REST_TRANSPORT_URI=http://192.168.99.102:12900
+    #     ports:
+    #         - "9000:9000"
+    #         - "12900:12900"
+
+
 volumes:
-    rabbitmqstore: {}
-    dbstore: {}
-    mytardisstore: {}
-    mydatastore: {}
-    mydataconfig: {}
+    rabbitmqstore:
+    dbstore:
+    mytardisstore:
+    mydatastore:
+    mydataconfig:
+    elasticstore:
