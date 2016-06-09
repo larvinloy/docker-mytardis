@@ -30,6 +30,7 @@ script:
       - if [ "$LOCAL_TAG" == ""  ]; then LOCAL_TAG=postgres; fi
       - echo $LOCAL_TAG
       - ./init $LOCAL_TAG
+      - cp env .env
       - docker-compose build
       - docker-compose up -d
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
