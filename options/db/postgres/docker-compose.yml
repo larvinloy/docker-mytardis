@@ -126,7 +126,7 @@ services:
         labels:
             - "org.mytardis.db=postgres"
         volumes:
-            - dbstore:/var/lib/postgresql
+            - dbstore:/var/lib/postgresql/data
         logging:
             driver: gelf
             options:
@@ -271,6 +271,9 @@ services:
         #    - "$KIBANA_PORT:5601"
         environment:
             ELASTICSEARCH_URL: http://elasticsearch:9200
+            NODE_OPTIONS: "--max-old-space-size=200"
+
+
 
 
     # mongo:
