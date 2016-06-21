@@ -1,7 +1,12 @@
-To create the password for kibana run the following command
+To create the password for kibana run the following commands
 
 ```
-htpasswd -c kibana.htpasswd mytardis
+docker-compose build
+docker-compose run htpasswd
 ```
 
-and restart the kibana container
+and restart the kibana and nginx container:
+
+```
+docker-compose restart kibana nginx
+```
