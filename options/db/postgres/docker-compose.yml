@@ -155,7 +155,6 @@ services:
             - $KIBANA_PORT:5601
         volumes_from:
             - app
-
         links:
             - app:mytardisapp
         volumes:
@@ -214,7 +213,7 @@ services:
         ports:
             - "$SRC_SSH_PORT:22"
         environment:
-            - ROOT_PASS=my_pass
+            - ROOT_PASS=$SSH_PASS
         volumes:
             - mydatastore:/mydatastaging
             - mydataconfig:/data
