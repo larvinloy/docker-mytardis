@@ -64,5 +64,43 @@ if SINGLE_SEARCH_ENABLED:
     }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'system': {
+            'format': '[%(asctime)s] %(levelname)-7s %(ip)-15s %(user)s %(method)s %(message)s %(status)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+        },
+        'module': {
+            'format': '[%(asctime)s] %(levelname)-7s %(module)s %(funcName)s %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'systemlog': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'system',
+        },
+        'modulelog': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'module',
+        },
+    },
+    'loggers': {
+        __name__: {
+            'handlers': ['systemlog'],
+            'propagate': False,
+            'level': SYSTEM_LOG_LEVEL,
+        },
+        'tardis': {
+            'handlers': ['modulelog'],
+            'propagate': False,
+            'level': MODULE_LOG_LEVEL,
+        },
+    }
+}
+
+
 
 djcelery.setup_loader()

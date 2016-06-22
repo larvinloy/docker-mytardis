@@ -80,6 +80,8 @@ ENV CELERY_TIME_LIMIT 115400
 ENV CELERY_LOG_LEVEL WARN
 ENV GUNICORN_PORT 8000
 ENV GUNICORN_LOG_LEVEL DEBUG
+COPY run/sftp_run.sh /
+RUN chmod u+x /sftp_run.sh
 COPY run/gunicorn_run.sh /
 RUN chmod u+x /gunicorn_run.sh
 COPY run/celery_run.sh /

@@ -12,6 +12,9 @@ main() {
 		beat)
 			run_beat
 			;;
+		sftp)
+			run_sftp
+			;;
 		store)
 			exit 0
 			;;
@@ -33,6 +36,11 @@ run_celery() {
 	exec /celery_run.sh
 }
 
+
+run_sftp() {
+	exec /sftp_run.sh
+}
+
 run_beat() {
 	#cp /logrotate_beat.conf /etc/logrotate.d/beat
 	#chmod 644 /etc/logrotate.d/beat
@@ -40,4 +48,3 @@ run_beat() {
 }
 
 main "$@"
-
