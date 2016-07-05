@@ -33,18 +33,21 @@ Usage
 ```
   and change passwords in ```.env```.
 
+
 5. Start the system in either of the following ways:
-   - To start the system from existing images of MyTardis and related components (Recommended):
+   - To start the system from existing images of MyTardis and related components  using self-signed certificate (Recommended):
 ```
     docker-compose pull
+    docker-compose run makecerts
     docker-compose up -d
 ```
 
-  - To start the system after building new images of MyTardis and related components (only if you intend to make changes to the `docker-mytardis` codebase):
+  - To start the system after building new images of MyTardis and related components using self-signed certificate (only if you intend to make changes to the `docker-mytardis` codebase):
+
 ```
     docker-compose build
+    docker-compose run makecerts
     docker-compose up -d
-
 ```
 
   After a while, the location http://127.0.0.1 will point at the mytardis portal. To watch the celery workers go to: http://127.0.0.1:5555.
