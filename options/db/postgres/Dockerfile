@@ -92,6 +92,7 @@ COPY run/waitforit.sh /
 RUN chmod u+x /waitforit.sh
 COPY celery_conf.py /opt/mytardis/webapp/celery_conf.py
 COPY gunicorn_conf.py /opt/mytardis/webapp/gunicorn_conf.py
+COPY fixtures/defaultgroup.json /opt/mytardis/webapp/tardis/tardis_portal/fixtures/defaultgroup.json
 
 # start script
 COPY start.sh /

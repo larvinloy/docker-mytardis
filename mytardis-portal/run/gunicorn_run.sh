@@ -25,7 +25,8 @@ python mytardis.py createcachetable celery_lock_cache
 python mytardis.py collectstatic --noinput
 
 python mytardis.py loaddata tardis/apps/mydata/fixtures/default_experiment_schema.json
-python mytardis.py loaddata tardis/apps/mydata/fixtures/cc_licenses.json
+python mytardis.py loaddata tardis/tardis_portal/fixtures/cc_licenses.json
+python mytardis.py loaddata tardis/tardis_portal/fixtures/defaultgroup.json
 
 #starting SSH
 #service ssh start

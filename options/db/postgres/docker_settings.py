@@ -101,6 +101,6 @@ LOGGING = {
     }
 }
 
-
+NEW_USER_INITIAL_GROUPS = ["Users"]
 
 djcelery.setup_loader()
