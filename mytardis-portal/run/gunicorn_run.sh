@@ -11,7 +11,8 @@ fi
 
 
 # The below only works for postgres, because mysql uses differnet port
-#/waitforit.sh db:5432 -- echo "db is up"
+/waitforit.sh -t 240 db:5432 -- echo "db is up"
+
 
 sleep 30
 
