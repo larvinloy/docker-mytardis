@@ -1,8 +1,6 @@
-FROM tutum/nginx
-RUN rm /etc/nginx/sites-enabled/default
-ADD sites-enabled/ /etc/nginx/sites-enabled
+FROM nginx:latest
 
-#COPY kibana.htpasswd /etc/nginx/conf.d/kibana.htpasswd
+COPY sites-enabled/mytardis /etc/nginx/conf.d/mytardis.conf
 
 RUN mkdir /logs
 RUN ln -sf /dev/stdout /logs/nginx_access.log

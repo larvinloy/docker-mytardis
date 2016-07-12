@@ -259,7 +259,7 @@ services:
             - app:mytardisapp
         volumes:
             - ./certs:/opt/certs:ro
-            - ./nginx_config:/etc/nginx/conf.d:ro
+            - ./nginx_config:/etc/nginx/kibana:ro
         depends_on:
             - app
             - logstash
