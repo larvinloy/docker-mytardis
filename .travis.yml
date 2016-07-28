@@ -33,6 +33,7 @@ script:
       - ./init $LOCAL_TAG
       - cp env .env
       - docker-compose build
+      - docker-compose run makecerts < .travis.input.txt
       - docker-compose up -d
       - sleep 60
       - docker-compose logs
