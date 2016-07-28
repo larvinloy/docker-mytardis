@@ -38,7 +38,7 @@ script:
       - sleep 60
       - docker-compose logs
       - docker-compose ps
-      - docker-compose -f selenium.yml up -d
+      - docker-compose -f selenium.yml up -d --force-recreate
       - sleep 30
       - docker-compose -f selenium.yml ps
       - docker volume ls
