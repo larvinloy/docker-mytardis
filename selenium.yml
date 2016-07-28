@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+
+  selenium:
+    image: selenium/standalone-chrome
+    environment:
+    # Required to avoid container startup hanging sometimes in
+    # some environments
+      JAVA_OPTS: -Djava.security.egd=file:/dev/./urandom
+    networks:
+      - mytardis
+
+networks:
+    mytardis:
+      external:
+        name: dockermytardis_mytardis
+    

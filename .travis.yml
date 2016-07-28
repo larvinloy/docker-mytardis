@@ -33,6 +33,11 @@ script:
       - cp env .env
       - docker-compose build
       - docker-compose up -d
+      - sleep 60
+      - docker-compose -f selenium.yml up -d
+      - sleep 30
+      - docker-compose -f smoketest.yml build
+      - docker-compose -f smoketest.yml run test
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - VERSION=`cat version.txt`
       - if [ "$VERSION" == ""  ]; then VERSION=latest; fi
