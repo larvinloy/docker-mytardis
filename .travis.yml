@@ -35,8 +35,14 @@ script:
       - docker-compose build
       - docker-compose up -d
       - sleep 60
+      - docker-compose logs
+      - docker-compose ps
       - docker-compose -f selenium.yml up -d
       - sleep 30
+      - docker-compose -f selenium.yml ps
+      - docker volume ls
+      - docker network ls
+      - docker ps
       - docker-compose -f smoketest.yml build
       - docker-compose -f smoketest.yml run test
       - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
