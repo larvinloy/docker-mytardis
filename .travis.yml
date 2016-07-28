@@ -24,6 +24,7 @@ before_install:
     - sudo mv docker-compose /usr/local/bin
 
 script:
+      - set -e
       - docker version
       - docker-compose version
       - LOCAL_TAG=`cat tag.txt`
