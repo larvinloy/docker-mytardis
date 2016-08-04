@@ -1,4 +1,5 @@
 FROM        phusion/baseimage:0.9.16
+#FROM        phusion/baseimage:0.9.19
 
 MAINTAINER  Ian Thomas <ianedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
 
@@ -16,9 +17,9 @@ RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp 
 USER root
 
 # Make staging and store volumes
-RUN mkdir -p /staging
-RUN mkdir -p /store
-RUN chown -R mytardis:nginx /store
+RUN mkdir -p /staging 
+RUN mkdir -p /store /opt/mytardis/webapp/var/store
+RUN chown -R mytardis:nginx /store /opt/mytardis/webapp/var/store
 RUN chown -R mytardis:nginx /staging
 
 # install mytardis
