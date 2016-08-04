@@ -38,7 +38,7 @@ script:
       - sleep 60
       - docker-compose logs
       - docker-compose ps
-      - docker-compose exec app bash -c "export DOCKER_BUILD=true && python mytardis.py test --settings=tardis.test_settings -e mydata"
+      - docker-compose exec app bash -c "chown -R mytardis.nginx /opt/mytardis/webapp && export DOCKER_BUILD=true && python mytardis.py test --settings=tardis.test_settings -e mydata"
       - docker-compose -f selenium.yml up -d --force-recreate
       - sleep 30
       - docker-compose -f selenium.yml ps
