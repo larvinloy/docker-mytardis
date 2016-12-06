@@ -34,4 +34,5 @@ python mytardis.py loaddata tardis/tardis_portal/fixtures/defaultgroup.json
 #service sshd start
 
 #starting mytardis
-/usr/bin/gunicorn --log-level WARN --log-file /logs/gunicorn.log -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :$GUNICORN_PORT  wsgi:application >> /logs/gunicorn.log  2>&1
+/usr/local/bin/gunicorn --log-level WARN --error-logfile - --access-logfile - --capture-output -c /opt/mytardis/webapp/gunicorn_conf.py -u mytardis -g nginx -b :$GUNICORN_PORT  wsgi:application 2>&1
+echo gunicorn done

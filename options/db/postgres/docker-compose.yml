@@ -2,49 +2,49 @@ version: "2"
 
 services:
 
-
-    logstash:
-        restart: always
-        image: logstash
-        command: |
-          -e '
-          input {
-            # Default port is 12201/udp
-            gelf { }
-            # This generates one test event per hour.
-            # It is great for debugging, but you might
-            # want to remove it in production.
-            heartbeat {
-                interval => 3600
-                }
-          }
-          # The following filter is a hack!
-          # The "de_dot" filter would be better, but it
-          # is not pre-installed with logstash by default.
-          filter {
-            ruby {
-              code => "
-                event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
-              "
-            }
-          }
-          output {
-            elasticsearch {
-              hosts => ["elasticsearch:9200"]
-            }
-            # This will output every message on stdout.
-            # It is great when testing your setup, but in
-            # production, it will probably cause problems;
-            # either by filling up your disks, or worse,
-            # by creating logging loops! BEWARE!
-            #stdout {
-            #  codec => rubydebug
-            #}
-          }'
-        networks:
-            - mytardis
-        ports:
-            - "12201:12201/udp"
+    #
+    # logstash:
+    #     restart: always
+    #     image: logstash
+    #     command: |
+    #       -e '
+    #       input {
+    #         # Default port is 12201/udp
+    #         gelf { }
+    #         # This generates one test event per hour.
+    #         # It is great for debugging, but you might
+    #         # want to remove it in production.
+    #         heartbeat {
+    #             interval => 3600
+    #             }
+    #       }
+    #       # The following filter is a hack!
+    #       # The "de_dot" filter would be better, but it
+    #       # is not pre-installed with logstash by default.
+    #       filter {
+    #         ruby {
+    #           code => "
+    #             event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+    #           "
+    #         }
+    #       }
+    #       output {
+    #         elasticsearch {
+    #           hosts => ["elasticsearch:9200"]
+    #         }
+    #         # This will output every message on stdout.
+    #         # It is great when testing your setup, but in
+    #         # production, it will probably cause problems;
+    #         # either by filling up your disks, or worse,
+    #         # by creating logging loops! BEWARE!
+    #         #stdout {
+    #         #  codec => rubydebug
+    #         #}
+    #       }'
+    #     networks:
+    #         - mytardis
+    #     ports:
+    #         - "12201:12201/udp"
 
     app:
         restart: always
@@ -57,9 +57,9 @@ services:
         links:
             - db:db
             - rabbitmq:amqp
-            - elasticsearch:haystack
+            #- elasticsearch:haystack
         depends_on:
-            - logstash
+            #- logstash
             - db
             - rabbitmq
         labels:
@@ -68,11 +68,11 @@ services:
             - gunicorn
         networks:
             - mytardis
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         env_file: .env
         environment:
             - DEBUG=$APP_DEBUG
@@ -99,19 +99,19 @@ services:
         links:
             - db:db
             - rabbitmq:amqp
-            - elasticsearch:haystack
+            #- elasticsearch:haystack
         depends_on:
-            - logstash
+            #- logstash
             - db
             - rabbitmq
         networks:
             - mytardis
-        logging:
-
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        # logging:
+        #
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
             - DEBUG=$CELERY_DEBUG
             - CELERY_LOG_LEVEL=$CELERY_LOG_LEVEL
@@ -142,20 +142,20 @@ services:
         links:
             - db:db
             - rabbitmq:amqp
-            - elasticsearch:haystack
+            #- elasticsearch:haystack
         depends_on:
-            - logstash
+            #- logstash
             - db
             - rabbitmq
         networks:
             - mytardis
         ports:
             - "$APP_SSH_PORT:2200"
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
             - DEBUG=$CELERY_DEBUG
             - CELERY_LOG_LEVEL=$CELERY_LOG_LEVEL
@@ -181,22 +181,22 @@ services:
         links:
             - db:db
             - rabbitmq:amqp
-            - elasticsearch:haystack
+            #- elasticsearch:haystack
         depends_on:
             - db
             - rabbitmq
-            - logstash
+            #- logstash
         labels:
             - "org.mytardis.db=postgres"
         command:
             - beat
         networks:
             - mytardis
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
             - DEBUG=$BEAT_DEBUG
             - DB_PORT=$DB_PORT
@@ -219,13 +219,13 @@ services:
             - "org.mytardis.db=postgres"
         volumes:
             - dbstore:/var/lib/postgresql/data
-        depends_on:
-            - logstash
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #depends_on:
+            #- logstash
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         environment:
             - POSTGRES_USER=$DB_USER
             - POSTGRES_PASSWORD=$DB_PASS
@@ -234,15 +234,15 @@ services:
         networks:
             - mytardis
 
-
-    elasticsearch:
-        restart: always
-        image: elasticsearch:2.3.1
-        volumes:
-            - elasticstore:/opt/elasticsearch/data
-        networks:
-            - mytardis
-        #command: "elasticsearch -Des.cluster.name='graylog'"
+    #
+    # elasticsearch:
+    #     restart: always
+    #     image: elasticsearch:2.3.1
+    #     volumes:
+    #         - elasticstore:/opt/elasticsearch/data
+    #     networks:
+    #         - mytardis
+    #     #command: "elasticsearch -Des.cluster.name='graylog'"
 
 
     nginx:
@@ -262,7 +262,7 @@ services:
             - ./nginx_config:/etc/nginx/kibana:ro
         depends_on:
             - app
-            - logstash
+            #- logstash
         networks:
             - mytardis
         env_file: .env
@@ -283,13 +283,13 @@ services:
             - '5672'
             - '15672'
         env_file: .env
-        depends_on:
-            - logstash
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://localhost:12201
-                tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #depends_on:
+            #- logstash
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
         hostname: amqp.local
         networks:
             - mytardis
@@ -328,21 +328,21 @@ services:
             - mydataconfig:/data
         networks:
             - mytardis
-
-    kibana:
-        restart: always
-        image: kibana
-        env_file: .env
-        depends_on:
-            - elasticsearch
-            - logstash
-        expose:
-            - 5601
-        environment:
-            ELASTICSEARCH_URL: http://elasticsearch:9200
-            NODE_OPTIONS: "--max-old-space-size=200"
-        networks:
-            - mytardis
+    #
+    # kibana:
+    #     restart: always
+    #     image: kibana
+    #     env_file: .env
+    #     depends_on:
+    #         - elasticsearch
+    #         #- logstash
+    #     expose:
+    #         - 5601
+    #     environment:
+    #         ELASTICSEARCH_URL: http://elasticsearch:9200
+    #         NODE_OPTIONS: "--max-old-space-size=200"
+    #     networks:
+    #         - mytardis
 
     # mongo:
     #     image: "mongo:3"
@@ -374,7 +374,7 @@ volumes:
     mytardisstore:
     mydatastore:
     mydataconfig:
-    elasticstore:
+    #elasticstore:
 
 networks:
     mytardis:

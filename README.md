@@ -3,7 +3,7 @@ Dockerized MyTardis
 
 This is a dockerized build of the 3.7 branch of the Mytardis Data Curation system: http://mytardis.org
 
-Creates an assembly of docker containers that provide the mytardis webportal, persistent tardis store and mysql/postgres db, full-text search using elasticsearch, rabbitmq message broker, two celery workers, and celery monitoring interface, ELK logging,  all working on a single host.
+Creates an assembly of docker containers that provide the mytardis webportal, persistent tardis store and mysql/postgres db,  rabbitmq message broker, two celery workers, and celery monitoring interface, ELK logging,  all working on a single host.
 
 The build has three types of configurations
 - **postgres**: Uses PostgreSQL db; users are managed via local Django user management only

@@ -4,7 +4,17 @@ FROM        phusion/baseimage:0.9.16
 MAINTAINER  Ian Thomas <ianedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gmail.com>
 
 # Install prerequisites
-RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev libjpeg-dev  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev libjpeg-dev  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get -y update && \
+apt-get -y install git ipython libldap2-dev libsasl2-dev \
+  libssl-dev libxml2-dev libxslt1-dev python-anyjson \
+  python-billiard python-bs4 python-crypto python-dateutil \
+  python-dev python-feedparser python-flexmock python-html5lib \
+  python-httplib2 python-pip python-psycopg2 python-pystache \
+  python-virtualenv python-wand python-yaml virtualenvwrapper \
+  zlib1g-dev libfreetype6-dev libjpeg-dev \
+   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
@@ -17,7 +27,7 @@ RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp 
 USER root
 
 # Make staging and store volumes
-RUN mkdir -p /staging 
+RUN mkdir -p /staging
 RUN mkdir -p /store /opt/mytardis/webapp/var/store
 RUN chown -R mytardis:nginx /store /opt/mytardis/webapp/var/store
 RUN chown -R mytardis:nginx /staging
@@ -28,7 +38,9 @@ WORKDIR /opt/mytardis/webapp
 RUN /usr/bin/pip install -U pip
 
 #Remove following line when 3.7  branch is updated
-ADD requirements.txt /opt/mytardis/webapp/requirements.txt
+#ADD requirements.txt /opt/mytardis/webapp/requirements.txt
+
+RUN /usr/bin/pip install dumb-init==1.0.0
 
 RUN pip install -r requirements.txt
 

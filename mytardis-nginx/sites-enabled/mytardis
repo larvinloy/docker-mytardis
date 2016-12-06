@@ -5,10 +5,10 @@ upstream mytardis {
 }
 
 
-upstream kibana {
-    ip_hash;
-    server kibana:5601 fail_timeout=0;
-}
+#upstream kibana {
+#    ip_hash;
+#    server kibana:5601 fail_timeout=0;
+#}
 
 server {
         listen 80 default_server;
@@ -64,21 +64,21 @@ server {
     }
 }
 
-server {
-
-    listen 5601;
-
-    access_log /logs/nginx_access.log;
-    error_log /logs/nginx_error.log;
-
-    #Password protected end points
-    location / {
-         proxy_pass http://kibana;
-         proxy_read_timeout 90;
-         limit_except GET {
-           proxy_pass http://kibana;
-           auth_basic "Restricted";
-           auth_basic_user_file /etc/nginx/kibana/kibana.htpasswd;
-         }
-     }
- }
+#server {
+#
+#    listen 5601;
+#
+#    access_log /logs/nginx_access.log;
+#    error_log /logs/nginx_error.log;
+#
+#    #Password protected end points
+#    location / {
+#         proxy_pass http://kibana;
+#         proxy_read_timeout 90;
+#         limit_except GET {
+#           proxy_pass http://kibana;
+#           auth_basic "Restricted";
+#           auth_basic_user_file /etc/nginx/kibana/kibana.htpasswd;
+#         }
+#     }
+# }
