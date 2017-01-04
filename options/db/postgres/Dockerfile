@@ -85,6 +85,8 @@ RUN usermod -a -G www-data mydata
 RUN mkdir -p /mydatastaging &&  chmod -R 775 /mydatastaging
 RUN chown -R mytardis.nginx  /mydatastaging/ #nocache
 
+ADD fixtures/chiminey_hrmc.json /opt/mytardis/webapp/chiminey_hrmc.json
+
 
 
 # setup celery/beat/gunicorn

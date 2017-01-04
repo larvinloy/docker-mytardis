@@ -1,0 +1,655 @@
+[
+{
+ "pk": 1,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "exp_graph",
+  "namespace": "http://rmit.edu.au/schemas/expgraph",
+  "subtype": "",
+  "hidden": true,
+  "type": 1,
+  "immutable": false
+ }
+},
+{
+ "pk": 2,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "dset_graph",
+  "namespace": "http://rmit.edu.au/schemas/dsetgraph",
+  "subtype": "",
+  "hidden": true,
+  "type": 2,
+  "immutable": false
+ }
+},
+{
+ "pk": 3,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "dfile_graph",
+  "namespace": "http://rmit.edu.au/schemas/dfilegraph",
+  "subtype": "",
+  "hidden": true,
+  "type": 3,
+  "immutable": false
+ }
+},
+{
+ "pk": 4,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "HRMC Experiment",
+  "namespace": "http://rmit.edu.au/schemas/hrmcexp",
+  "subtype": "",
+  "hidden": false,
+  "type": 1,
+  "immutable": false
+ }
+},
+{
+ "pk": 5,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "HRMC Input Dataset",
+  "namespace": "http://rmit.edu.au/schemas/hrmcdataset/input",
+  "subtype": "",
+  "hidden": false,
+  "type": 2,
+  "immutable": false
+ }
+},
+{
+ "pk": 6,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "HRMC Output Dataset",
+  "namespace": "http://rmit.edu.au/schemas/hrmcdataset/output",
+  "subtype": "",
+  "hidden": false,
+  "type": 2,
+  "immutable": false
+ }
+},
+{
+ "pk": 7,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "remotemake",
+  "namespace": "http://rmit.edu.au/schemas/remotemake",
+  "subtype": "",
+  "hidden": false,
+  "type": 1,
+  "immutable": false
+ }
+},
+{
+ "pk": 8,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "remotemake output",
+  "namespace": "http://rmit.edu.au/schemas/remotemake/output",
+  "subtype": "",
+  "hidden": false,
+  "type": 1,
+  "immutable": false
+ }
+},
+{
+ "pk": 9,
+ "model": "tardis_portal.schema",
+ "fields": {
+  "name": "Related Info",
+  "namespace": "http://ands.org.au/standards/rif-cs/registryObjects#relatedInfo",
+  "subtype": "related-info-experiment",
+  "hidden": true,
+  "type": 1,
+  "immutable": false
+ }
+},
+{
+ "pk": 1,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_dict",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_dict",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 1
+ }
+},
+{
+ "pk": 2,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_keys",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_keys",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 1
+ }
+},
+{
+ "pk": 3,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "graph_info",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "graph_info",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 1
+ }
+},
+{
+ "pk": 4,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "name",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "name",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 1
+ }
+},
+{
+ "pk": 5,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "plot",
+  "data_type": 5,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "scatterplot",
+  "units": "",
+  "order": 9999,
+  "immutable": true,
+  "schema": 1
+ }
+},
+{
+ "pk": 6,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_dict",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_dict",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 7,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_keys",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_keys",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 8,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "graph_info",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "graph_info",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 9,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "name",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "name",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 10,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "plot",
+  "data_type": 5,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "scatterplot",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 11,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_dict",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_dict",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 12,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "value_keys",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "value_keys",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 13,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "name",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "name",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 14,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "graph_info",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "graph_info",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 15,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "plot",
+  "data_type": 5,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "scatterplot",
+  "units": "image",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 16,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "checksum",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "checksum",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 1
+ }
+},
+{
+ "pk": 17,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "checksum",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "checksum",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 2
+ }
+},
+{
+ "pk": 18,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "checksum",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "checksum",
+  "units": "",
+  "order": 9999,
+  "immutable": false,
+  "schema": 3
+ }
+},
+{
+ "pk": 19,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "image",
+  "data_type": 5,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "image",
+  "units": "image",
+  "order": 9999,
+  "immutable": true,
+  "schema": 1
+ }
+},
+{
+ "pk": 20,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "type",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "publication,website",
+  "comparison_type": 1,
+  "full_name": "Type",
+  "units": "",
+  "order": 10,
+  "immutable": false,
+  "schema": 9
+ }
+},
+{
+ "pk": 21,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "identifier",
+  "data_type": 3,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Identifier",
+  "units": "",
+  "order": 30,
+  "immutable": false,
+  "schema": 9
+ }
+},
+{
+ "pk": 22,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "title",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Title",
+  "units": "",
+  "order": 20,
+  "immutable": false,
+  "schema": 9
+ }
+},
+{
+ "pk": 23,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "notes",
+  "data_type": 7,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Notes",
+  "units": "",
+  "order": 40,
+  "immutable": false,
+  "schema": 9
+ }
+},
+
+{
+ "pk": 24,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "computation_platform",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Computation Platform",
+  "units": "",
+  "order": 1,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 25,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "input_location",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Input Location",
+  "units": "",
+  "order": 2,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 26,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "output_location",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Output Location",
+  "units": "",
+  "order": 3,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 27,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "iseed",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Random Number Seed",
+  "units": "",
+  "order": 4,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 28,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "pottype",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Pottype",
+  "units": "",
+  "order": 5,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 29,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "error_threshold",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Error Threshold",
+  "units": "",
+  "order": 6,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 30,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "optimisation_scheme",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "No. Varying parameters",
+  "units": "",
+  "order": 7,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 28,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "fanout_per_kept_result",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "No. results kept per result",
+  "units": "",
+  "order": 8,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 29,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "threshold",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "No. results per iteration",
+  "units": "",
+  "order": 9,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 30,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "max_iteration",
+  "data_type": 1,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Maximum no. iterations",
+  "units": "",
+  "order": 10,
+  "immutable": false,
+  "schema": 4
+ }
+},
+{
+ "pk": 36,
+ "model": "tardis_portal.parametername",
+ "fields": {
+  "name": "sweep_map",
+  "data_type": 2,
+  "is_searchable": false,
+  "choices": "",
+  "comparison_type": 1,
+  "full_name": "Values to sweep over",
+  "units": "",
+  "order": 11,
+  "immutable": false,
+  "schema": 4
+ }
+}
+]
