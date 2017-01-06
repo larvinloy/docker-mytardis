@@ -10,8 +10,8 @@ else
 fi
 
 
-# The below only works for postgres, because mysql uses differnet port
-/waitforit.sh -t 240 db:5432 -- echo "db is up"
+echo ${DB_PORT}
+waitforit.sh -t 240 db:${DB_PORT} -- echo "db is up"
 
 
 sleep 30

@@ -1,122 +1,398 @@
-mytardis-app-mysql:
-  restart: always
-  build: mytardis-portal
-  links:
-   - mytardis-db-mysql:db
-   - mytardis-rabbitmqamb-mysql:rabbitmq
-  volumes_from:
-   - mytardis-mytardisstore-mysql
-  ports:
-   - "50000:22"
-  command:
-   - "gunicorn"
+version: "2"
 
-mytardis-celery-mysql:
-  restart: always
-  build: mytardis-portal
-  links:
-   - mytardis-db-mysql:db
-   - mytardis-rabbitmqamb-mysql:rabbitmq
-  environment:
-   - INDEX=1
-  volumes_from:
-   - mytardis-mytardisstore-mysql
-  command:
-   - "celery"
+services:
 
-mytardis-beat-mysql:
-  restart: always
-  build: mytardis-portal
-  links:
-   - mytardis-db-mysql:db
-   - mytardis-rabbitmqamb-mysql:rabbitmq
-  volumes_from:
-   - mytardis-mytardisstore-mysql
-  command:
-   - "beat"
+    #
+    # logstash:
+    #     restart: always
+    #     image: logstash
+    #     command: |
+    #       -e '
+    #       input {
+    #         # Default port is 12201/udp
+    #         gelf { }
+    #         # This generates one test event per hour.
+    #         # It is great for debugging, but you might
+    #         # want to remove it in production.
+    #         heartbeat {
+    #             interval => 3600
+    #             }
+    #       }
+    #       # The following filter is a hack!
+    #       # The "de_dot" filter would be better, but it
+    #       # is not pre-installed with logstash by default.
+    #       filter {
+    #         ruby {
+    #           code => "
+    #             event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+    #           "
+    #         }
+    #       }
+    #       output {
+    #         elasticsearch {
+    #           hosts => ["elasticsearch:9200"]
+    #         }
+    #         # This will output every message on stdout.
+    #         # It is great when testing your setup, but in
+    #         # production, it will probably cause problems;
+    #         # either by filling up your disks, or worse,
+    #         # by creating logging loops! BEWARE!
+    #         #stdout {
+    #         #  codec => rubydebug
+    #         #}
+    #       }'
+    #     networks:
+    #         - mytardis
+    #     ports:
+    #         - "12201:12201/udp"
 
-mytardis-nginx-mysql:
-  restart: always
-  build: mytardis-nginx
-  ports:
-   - "80:80"
-  volumes_from:
-   - mytardis-app-mysql
-  links:
-   - mytardis-app-mysql:mytardis
+    app:
+        restart: always
+        build: mytardis-portal
+        image: ianedwardthomas/mytardis-app-mysql:latest-travis
+        volumes:
+            - mytardisstore:/store
+        volumes_from:
+            - mydata
+        links:
+            - db:db
+            - rabbitmq:amqp
+            #- elasticsearch:haystack
+        depends_on:
+            #- logstash
+            - db
+            - rabbitmq
+        labels:
+            - "org.mytardis.db=mysql"
+        command:
+            - gunicorn
+        networks:
+            - mytardis
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        env_file: .env
+        environment:
+            - DEBUG=$APP_DEBUG
+            - GUNICORN_LOG_LEVEL=$GUNICORN_LOG_LEVEL
+            - GUNICORN_PORT=$GUNICORN_PORT
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
 
-mytardis-db-mysql:
-  restart: always
-  image: mysql
-  volumes_from:
-    - mytardis-dbstore-mysql
-  environment:
-    - MYSQL_DATABASE=mysql
-    - MYSQL_ROOT_PASSWORD=mysecretpassword
-    - MYSQL_USER=mysql
-    - MYSQL_PASSWORD=mysecretpassword
+    celery:
+        restart: always
+        build: mytardis-portal
+        image: ianedwardthomas/mytardis-app-mysql:latest-travis
+        volumes:
+            - mytardisstore:/store
+        labels:
+            - "org.mytardis.db=mysql"
+        links:
+            - db:db
+            - rabbitmq:amqp
+            #- elasticsearch:haystack
+        depends_on:
+            #- logstash
+            - db
+            - rabbitmq
+        networks:
+            - mytardis
+        # logging:
+        #
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        environment:
+            - DEBUG=$CELERY_DEBUG
+            - CELERY_LOG_LEVEL=$CELERY_LOG_LEVEL
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+        # volumes_from:
+        #     - mytardisstore
+        command:
+            - celery
+        env_file: .env
 
-mytardis-rabbitmq-mysql:
-  restart: always
-  image: tutum/rabbitmq
-  volumes_from:
-   - mytardis-rabbitmqstore-mysql
-  expose:
-   - "5672"
-   - "15672"
-  hostname: "amqp.local"
-  environment:
-   - RABBITMQ_PASS=pass
+    sftp:
+        # allows users to browse their datafiles using sftp
+        restart: always
+        build: mytardis-portal
+        image: ianedwardthomas/mytardis-app-mysql:latest-travis
+        volumes:
+            - mytardisstore:/store
+        labels:
+            - "org.mytardis.db=mysql"
+        links:
+            - db:db
+            - rabbitmq:amqp
+            #- elasticsearch:haystack
+        depends_on:
+            #- logstash
+            - db
+            - rabbitmq
+        networks:
+            - mytardis
+        ports:
+            - "$APP_SSH_PORT:2200"
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        environment:
+            - DEBUG=$CELERY_DEBUG
+            - CELERY_LOG_LEVEL=$CELERY_LOG_LEVEL
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+        command:
+            - sftp
+        env_file: .env
 
-mytardis-rabbitmqamb-mysql:
-  restart: always
-  image: cpuguy83/docker-grand-ambassador
-  volumes:
-   - /var/run/docker.sock:/var/run/docker.sock
-  environment:
-   - RABBITMQ_PASS=pass
-  command: "-name dockermytardis_mytardis-rabbitmq-mysql_1"
-
-mytardis-monitor-mysql:
-  restart: always
-  image: iserko/docker-celery-flower
-  ports:
-    - "5555:5555"
-  links:
-    - mytardis-rabbitmqamb-mysql:rabbitmq
-  environment:
-    - CELERY_BROKER_URL=amqp://admin:pass@rabbitmq//
-  command:
-    - "--broker_api=http://admin:pass@rabbitmq:15672/api/"
-    - "--basic_auth=mytardis:pass"
-
-mytardis-mytardisstore-mysql:
-  build: mytardis-portal
-  volumes:
-   - /store
-  command: "true"
-
-mytardis-dbstore-mysql:
-  image: mysql
-  volumes:
-   - /var/lib/mysql
-  command: "true" 
-
-mytardis-rabbitmqstore-mysql:
-  image: tutum/rabbitmq
-  volumes:
-    - /data/mnesia
-  command: "true"
-
-# syslog:
-#   restart: always
-#   build: mytardis-syslog
-#   volumes:
-#   # see https://jpetazzo  .github.io/2014/08/24/syslog-docker/
-#     - /tmp/syslogdev:/dev
-# #  volumes_from:
-# #    - logstore
+    beat:
+        restart: always
+        build: mytardis-portal
+        image: ianedwardthomas/mytardis-app-mysql:latest-travis
+        volumes:
+            - mytardisstore:/store
+        links:
+            - db:db
+            - rabbitmq:amqp
+            #- elasticsearch:haystack
+        depends_on:
+            - db
+            - rabbitmq
+            #- logstash
+        labels:
+            - "org.mytardis.db=mysql"
+        command:
+            - beat
+        networks:
+            - mytardis
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        environment:
+            - DEBUG=$BEAT_DEBUG
+            - DB_PORT=$DB_PORT
+            - DB_USER=$DB_USER
+            - DB_PASS=$DB_PASS
+            - DB_NAME=$DB_NAME
+            - BEAT_LOG_LEVEL=INFO
+            - SYSTEM_LOG_LEVEL=$SYSTEM_LOG_LEVEL
+            - MODULE_LOG_LEVEL=$MODULE_LOG_LEVEL
+            - SINGLE_SEARCH_ENABLED=$SINGLE_SEARCH_ENABLED
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+        env_file: .env
 
 
+    # db:
+    #     restart: always
+    #     image: mysql
+    #     labels:
+    #         - "org.mytardis.db=mysql"
+    #     volumes:
+    #         - dbstore:/var/lib/mysqlql/data
+    #     #depends_on:
+    #         #- logstash
+    #     # logging:
+    #     #     driver: gelf
+    #     #     options:
+    #     #         gelf-address: udp://localhost:12201
+    #     #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     environment:
+    #         - POSTGRES_USER=$DB_USER
+    #         - POSTGRES_PASSWORD=$DB_PASS
+    #         - POSTGRES_DATABASE=$DB_NAME
+    #     env_file: .env
+    #     networks:
+    #         - mytardis
 
 
+    db:
+        restart: always
+        image: mysql:5.7.17
+        labels:
+            - "org.mytardis.db=mysql"
+        volumes:
+            - dbstore:/var/lib/mysql
+        environment:
+            - MYSQL_USER=$DB_USER
+            - MYSQL_DATABASE=$DB_NAME
+            - MYSQL_ROOT_PASSWORD=$DB_PASS
+            - MYSQL_PASSWORD=$DB_PASS
+        env_file: .env
+        networks:
+            - mytardis
+
+    #
+    # elasticsearch:
+    #     restart: always
+    #     image: elasticsearch:2.3.1
+    #     volumes:
+    #         - elasticstore:/opt/elasticsearch/data
+    #     networks:
+    #         - mytardis
+    #     #command: "elasticsearch -Des.cluster.name='graylog'"
+
+
+    nginx:
+        restart: always
+        build: mytardis-nginx
+        image: ianedwardthomas/mytardis-nginx-mysql:latest-travis
+        ports:
+            - $NGINX_PORT:80
+            - $NGINX_SSH_PORT:443
+            - $KIBANA_PORT:5601
+        volumes_from:
+            - app
+        links:
+            - app:mytardisapp
+        volumes:
+            - ./certs:/opt/certs:ro
+            - ./nginx_config:/etc/nginx/kibana:ro
+        depends_on:
+            - app
+            #- logstash
+        networks:
+            - mytardis
+        env_file: .env
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+
+
+    rabbitmq:
+        restart: always
+        image: rabbitmq:3-management
+        #image: rabbitmq:3.6.1
+        volumes:
+            - rabbitmqstore:/data/mnesia
+        expose:
+            - '5672'
+            - '15672'
+        env_file: .env
+        #depends_on:
+            #- logstash
+        # logging:
+        #     driver: gelf
+        #     options:
+        #         gelf-address: udp://localhost:12201
+        #         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        hostname: amqp.local
+        networks:
+            - mytardis
+        environment:
+            - RABBITMQ_DEFAULT_USER=$RABBITMQ_DEFAULT_USER
+            - RABBITMQ_DEFAULT_PASS=$RABBITMQ_DEFAULT_PASS
+
+    monitor:
+        restart: always
+        image: iserko/docker-celery-flower
+        links:
+            - rabbitmq:amqp
+        ports:
+            - $MONITOR_PORT:5555
+        depends_on:
+            - rabbitmq
+        env_file: .env
+        networks:
+            - mytardis
+        environment:
+            - CELERY_BROKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@amqp//
+        command:
+            - --broker_api=http://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@amqp:15672/api/
+            - --basic_auth=$MONITOR_USER:$MONITOR_PASS
+
+    mydata:
+        restart: always
+        image: million12/ssh
+        env_file: .env
+        ports:
+            - "$SRC_SSH_PORT:22"
+        environment:
+            - ROOT_PASS=$SSH_PASS
+        volumes:
+            - mydatastore:/mydatastaging
+            - mydataconfig:/data
+        networks:
+            - mytardis
+    #
+    # kibana:
+    #     restart: always
+    #     image: kibana
+    #     env_file: .env
+    #     depends_on:
+    #         - elasticsearch
+    #         #- logstash
+    #     expose:
+    #         - 5601
+    #     environment:
+    #         ELASTICSEARCH_URL: http://elasticsearch:9200
+    #         NODE_OPTIONS: "--max-old-space-size=200"
+    #     networks:
+    #         - mytardis
+
+    # mongo:
+    #     image: "mongo:3"
+    #
+    # graylog:
+    #     image: graylog2/server:2.0.1-1
+    #     environment:
+    #         - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+    #         - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+    #         - GRAYLOG_REST_TRANSPORT_URI=http://192.168.99.102:12900
+    #     ports:
+    #         - "9000:9000"
+    #         - "12900:12900"
+
+    makecerts:
+        restart: never
+        build: makecerts
+        volumes:
+            - ./certs:/opt/certs
+        command:
+            "/run.sh"
+        networks:
+            - mytardis
+        env_file: .env
+
+volumes:
+    rabbitmqstore:
+    dbstore:
+    mytardisstore:
+    mydatastore:
+    mydataconfig:
+    #elasticstore:
+
+networks:
+    mytardis:
+        driver: bridge
