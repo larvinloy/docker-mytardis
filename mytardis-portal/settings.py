@@ -18,3 +18,19 @@ try:
 except:
     print 'no Docker specific MyTardis settings available'
     raise
+
+# added
+#INSTALLED_APPS = INSTALLED_APPS + [
+#    'mytardisbf',
+#]
+
+#MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('tardis.tardis_portal.filters.FilterInitMiddleware',)
+#FILTER_MIDDLEWARE = (("tardis.tardis_portal.filters", "FilterInitMiddleware"),)
+
+#POST_SAVE_FILTERS = [
+#   ("mytardisbf.filters.metadata_filter.make_filter",
+#   ["BioformatsMetadata", "http://tardis.edu.au/schemas/bioformats/2"]),
+#]
+
+# added-end
+

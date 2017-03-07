@@ -5,6 +5,11 @@ MAINTAINER  Ian Thomas <ianedwardthomas@gmail.com> and Iman Yusuf <iimanyusuf@gm
 
 # Install prerequisites
 #RUN apt-get -y update && apt-get -y install python-pip git libxml2-dev libxslt1-dev python-dev zlib1g-dev python-wand python-virtualenv virtualenvwrapper python-psycopg2 python-yaml ipython python-anyjson python-bs4 python-billiard python-feedparser python-html5lib python-httplib2 python-pystache python-crypto python-flexmock python-dateutil supervisor gunicorn nginx pwgen libldap2-dev libsasl2-dev libmysqlclient-dev libjpeg-dev  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get install -y software-properties-common
+# Add repo for Java 8 and accept license
+RUN apt-add-repository ppa:webupd8team/java && apt-get update
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 seen true" | debconf-set-selections
 RUN apt-get -y update && \
 apt-get -y install git ipython libldap2-dev libsasl2-dev \
   libssl-dev libxml2-dev libxslt1-dev python-anyjson \
@@ -12,14 +17,14 @@ apt-get -y install git ipython libldap2-dev libsasl2-dev \
   python-dev python-feedparser python-flexmock python-html5lib \
   python-httplib2 python-pip python-psycopg2 python-pystache \
   python-virtualenv python-wand python-yaml virtualenvwrapper \
-  zlib1g-dev libfreetype6-dev libjpeg-dev \
+  zlib1g-dev libfreetype6-dev oracle-java8-installer libjpeg-dev \
    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 # Get mytardis source
 RUN groupadd -r nginx && adduser --home /opt/mytardis --disabled-password --ingroup nginx --gecos '' mytardis
 USER mytardis
-ENV MYTARDIS_URL https://github.com/mytardis/mytardis.git
+ENV MYTARDIS_URL https://github.com/larvinloy/mytardis.git
 ENV MYTARDIS_BRANCH 3.7
 
 RUN cd /opt/mytardis &&  git clone -b ${MYTARDIS_BRANCH} ${MYTARDIS_URL} webapp \
@@ -43,6 +48,11 @@ RUN /usr/bin/pip install -U pip
 RUN /usr/bin/pip install dumb-init==1.0.0
 
 RUN pip install -r requirements.txt
+
+#Adding filter here
+RUN pip install -U numpy
+RUN pip install -e git+https://github.com/keithschulze/mytardisbf.git@0.1.1#egg=mytardisbf
+
 
 RUN mkdir -p /logs
 RUN chown -R mytardis:nginx /logs
