@@ -58,6 +58,7 @@ git clone https://github.com/ianedwardthomas/docker-mytardis.git
 ```
   docker exec app bash
   cd tardis
+  nano settings.py
 ```
    Uncomment all lines between ```added``` and ```added-end```
   
