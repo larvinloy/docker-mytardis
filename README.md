@@ -10,7 +10,7 @@ The build has three types of configurations
 - **mysql**: Uses MySQL db; users are managed via local Django user management only
 - **cas**: Uses MySQL db, users are managed via local Django user management and Central Authentication Service (CAS)
 
-This branch integrates the mytardisbf filter package(https://github.com/keithschulze/mytardisbf), which uses Bioformats library to preview images and extract metadata. 
+This branch integrates the mytardisbf filter package(https://github.com/keithschulze/mytardisbf), which uses Bioformats library to preview images and extract metadata. For more information read ```REPORT.pdf.```
 
 Usage
 -----
